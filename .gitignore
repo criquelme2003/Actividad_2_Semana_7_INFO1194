@@ -17,3 +17,5 @@ compile_commands.json
 *.exe
 
 .DS_Store
+.cache/**
+.cache
