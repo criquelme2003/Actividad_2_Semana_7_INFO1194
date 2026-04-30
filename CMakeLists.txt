@@ -2,8 +2,7 @@ cmake_minimum_required(VERSION 3.24)
 project(mochila_ga LANGUAGES CXX)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
@@ -32,10 +31,14 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(fast-cpp-csv-parser argparse)
 
-add_executable(${PROJECT_NAME} src/main.cpp)
+add_executable(${PROJECT_NAME}
+    src/main.cpp
+    src/cli.cpp
+)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE OpenMP::OpenMP_CXX)
 target_include_directories(${PROJECT_NAME} PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${CMAKE_CURRENT_BINARY_DIR}/_deps/fast-cpp-csv-parser-src
     ${argparse_SOURCE_DIR}/include
 )
