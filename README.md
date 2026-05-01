@@ -28,7 +28,7 @@ sudo apt install -y entr
 ```bash
 cmake --preset dev
 cmake --build --preset dev
-./build/mochila_ga --instance data/medium --variant islands --threads 8 --seed 123
+./build/mochila_ga --instance data/instance_small --variant sequential --threads 1 --seed 123 -v
 ```
 
 ## Compilar y ejecutar (Makefile de soporte)
@@ -42,7 +42,7 @@ make watch
 Con argumentos personalizados:
 
 ```bash
-make run instance="data/medium" variant="islands" threads="8" seed="123"
+make run instance="data/instance_small" variant="sequential" threads="1" seed="123"
 ```
 
 `make run` ejecuta en modo verbose por defecto (`-v`).

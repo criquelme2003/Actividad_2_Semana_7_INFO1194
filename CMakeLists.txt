@@ -29,14 +29,27 @@ FetchContent_Declare(
     GIT_SHALLOW TRUE
 )
 
-FetchContent_MakeAvailable(fast-cpp-csv-parser argparse)
+FetchContent_Declare(
+    fmt
+    GIT_REPOSITORY https://github.com/fmtlib/fmt.git
+    GIT_TAG 11.2.0
+    GIT_SHALLOW TRUE
+)
+
+FetchContent_MakeAvailable(fast-cpp-csv-parser argparse fmt)
 
 add_executable(${PROJECT_NAME}
     src/main.cpp
     src/cli.cpp
+    src/instance_loader.cpp
+    src/fitness.cpp
+    src/selection.cpp
+    src/operators.cpp
+    src/genetic_algorithm.cpp
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE OpenMP::OpenMP_CXX)
+target_link_libraries(${PROJECT_NAME} PRIVATE fmt::fmt)
 target_include_directories(${PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${CMAKE_CURRENT_BINARY_DIR}/_deps/fast-cpp-csv-parser-src
