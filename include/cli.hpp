@@ -8,6 +8,7 @@ public:
 	bool verbose;
 	std::string input_file;
 	std::string variant;
+	std::string output_csv;
 
 	CliArguments(int argc, char *argv[]);
 	void display();

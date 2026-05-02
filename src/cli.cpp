@@ -25,6 +25,10 @@ CliArguments::CliArguments(int argc, char *argv[]) {
 
 	program.add_argument("-v", "--verbose").help("Modo verbose").default_value(false).implicit_value(true);
 
+	program.add_argument("--output-csv")
+	    .help("Ruta del archivo CSV donde se acumulan los resultados experimentales")
+	    .default_value(string(""));
+
 	try {
 		program.parse_args(argc, argv);
 	} catch (const runtime_error &err) {
@@ -37,6 +41,7 @@ CliArguments::CliArguments(int argc, char *argv[]) {
 	seed = program.get<int>("--seed");
 	num_threads = program.get<int>("--threads");
 	verbose = program.get<bool>("--verbose");
+	output_csv = program.get<string>("--output-csv");
 }
 
 void CliArguments::display() {
@@ -45,4 +50,7 @@ void CliArguments::display() {
 	fmt::print("Seed: {}\n", seed);
 	fmt::print("Threads: {}\n", num_threads);
 	fmt::print("Verbose: {}\n", verbose ? "Yes" : "No");
+	if (!output_csv.empty()) {
+		fmt::print("Output CSV: {}\n", output_csv);
+	}
 }

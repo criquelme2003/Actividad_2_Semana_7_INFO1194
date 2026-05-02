@@ -2,7 +2,10 @@
 #include "constants.hpp"
 #include "genetic_algorithm.hpp"
 #include "instance_loader.hpp"
+#include "parallel_genetic_algorithm.hpp"
+#include <chrono>
 #include <fmt/core.h>
+#include <fstream>
 #include <stdexcept>
 #include <utility>
 
@@ -25,6 +28,19 @@ GAConfig build_config() {
 	                                           .delta = PENALTY_DELTA,
 	                                           .epsilon = PENALTY_EPSILON}};
 }
+
+void write_csv_row(const std::string &path, const std::string &variant, int threads, int seed,
+                   const GARunResult &result, double elapsed_ms) {
+	std::ofstream f(path, std::ios::app);
+	if (!f.is_open()) {
+		return;
+	}
+	// variant,threads,seed,generations,best_fitness,best_value,feasible,time_ms
+	f << variant << ',' << threads << ',' << seed << ',' << result.generations_executed << ','
+	  << result.best_by_fitness.evaluation.fitness << ','
+	  << result.best_by_fitness.evaluation.total_value << ','
+	  << (result.has_feasible ? 1 : 0) << ',' << elapsed_ms << '\n';
+}
 } // namespace
 
 int main(int argc, char *argv[]) {
@@ -43,24 +59,46 @@ int main(int argc, char *argv[]) {
 
 		const ProblemInstance instance = std::move(instance_result.value());
 
-		if (args.variant != "sequential") {
-			throw runtime_error("En esta etapa solo esta implementada la variante sequential");
+		const auto t_start = std::chrono::steady_clock::now();
+		GARunResult run_result;
+
+		if (args.variant == "sequential") {
+			GeneticAlgorithm ga(instance, build_config(), args.seed);
+			run_result = ga.run();
+		} else if (args.variant == "parallel") {
+			ParallelGeneticAlgorithm ga(instance, build_config(), args.seed, args.num_threads);
+			run_result = ga.run();
+		} else {
+			throw runtime_error("Variante no reconocida: '" + args.variant +
+			                    "'. Opciones disponibles: sequential, parallel, islands");
 		}
 
-		GeneticAlgorithm ga(instance, build_config(), args.seed);
-		const GARunResult run_result = ga.run();
+		const double elapsed_ms =
+		    std::chrono::duration<double, std::milli>(std::chrono::steady_clock::now() - t_start)
+		        .count();
 
+		fmt::print("Variante: {}\n", args.variant);
+		fmt::print("Hilos: {}\n", args.num_threads);
+		fmt::print("Semilla: {}\n", args.seed);
 		fmt::print("Generaciones ejecutadas: {}\n", run_result.generations_executed);
 		fmt::print("Mejor fitness: {:.3f}\n", run_result.best_by_fitness.evaluation.fitness);
-		fmt::print("Mejor valor total: {:.3f}\n", run_result.best_by_fitness.evaluation.total_value);
+		fmt::print("Mejor valor total: {:.3f}\n",
+		           run_result.best_by_fitness.evaluation.total_value);
 		fmt::print("Factible (restricciones duras): {}\n",
 		           run_result.best_by_fitness.evaluation.feasible_hard ? "si" : "no");
 		fmt::print("Penalizacion total: {:.3f}\n", run_result.best_by_fitness.evaluation.penalty);
+		fmt::print("Tiempo de ejecucion: {:.3f} ms\n", elapsed_ms);
 
 		if (run_result.has_feasible) {
-			fmt::print("Mejor fitness factible: {:.3f}\n", run_result.best_feasible.evaluation.fitness);
+			fmt::print("Mejor fitness factible: {:.3f}\n",
+			           run_result.best_feasible.evaluation.fitness);
 		} else {
 			fmt::print("No se encontro solucion factible en restricciones duras\n");
+		}
+
+		if (!args.output_csv.empty()) {
+			write_csv_row(args.output_csv, args.variant, args.num_threads, args.seed, run_result,
+			              elapsed_ms);
 		}
 
 		return 0;
