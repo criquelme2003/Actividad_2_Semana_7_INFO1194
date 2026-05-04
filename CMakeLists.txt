@@ -47,6 +47,7 @@ add_executable(${PROJECT_NAME}
     src/operators.cpp
     src/genetic_algorithm.cpp
     src/parallel_genetic_algorithm.cpp
+    src/island_model.cpp
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE OpenMP::OpenMP_CXX)

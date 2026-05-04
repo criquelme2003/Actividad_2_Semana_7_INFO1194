@@ -2,6 +2,7 @@
 #include "constants.hpp"
 #include "genetic_algorithm.hpp"
 #include "instance_loader.hpp"
+#include "island_model.hpp"
 #include "parallel_genetic_algorithm.hpp"
 #include <chrono>
 #include <fmt/core.h>
@@ -29,17 +30,36 @@ GAConfig build_config() {
 	                                           .epsilon = PENALTY_EPSILON}};
 }
 
-void write_csv_row(const std::string &path, const std::string &variant, int threads, int seed,
-                   const GARunResult &result, double elapsed_ms) {
+// Escribe la cabecera CSV solo si el archivo no existe o está vacío.
+void ensure_csv_header(const std::string &path) {
+	std::ifstream check(path);
+	const bool needs_header = !check.is_open() || check.peek() == std::ifstream::traits_type::eof();
+	check.close();
+	if (!needs_header) {
+		return;
+	}
+	std::ofstream f(path);
+	if (f.is_open()) {
+		f << "instance,variant,threads,seed,generations,"
+		     "best_fitness,best_value,"
+		     "best_feasible_fitness,best_feasible_value,"
+		     "feasible,time_ms\n";
+	}
+}
+
+void write_csv_row(const std::string &path, const std::string &instance, const std::string &variant, int threads,
+                   int seed, const GARunResult &result, double elapsed_ms) {
+	ensure_csv_header(path);
 	std::ofstream f(path, std::ios::app);
 	if (!f.is_open()) {
 		return;
 	}
-	// variant,threads,seed,generations,best_fitness,best_value,feasible,time_ms
-	f << variant << ',' << threads << ',' << seed << ',' << result.generations_executed << ','
-	  << result.best_by_fitness.evaluation.fitness << ','
-	  << result.best_by_fitness.evaluation.total_value << ','
-	  << (result.has_feasible ? 1 : 0) << ',' << elapsed_ms << '\n';
+	const double feasible_fitness = result.has_feasible ? result.best_feasible.evaluation.fitness : 0.0;
+	const double feasible_value = result.has_feasible ? result.best_feasible.evaluation.total_value : 0.0;
+
+	f << instance << ',' << variant << ',' << threads << ',' << seed << ',' << result.generations_executed << ','
+	  << result.best_by_fitness.evaluation.fitness << ',' << result.best_by_fitness.evaluation.total_value << ','
+	  << feasible_fitness << ',' << feasible_value << ',' << (result.has_feasible ? 1 : 0) << ',' << elapsed_ms << '\n';
 }
 } // namespace
 
@@ -68,36 +88,41 @@ int main(int argc, char *argv[]) {
 		} else if (args.variant == "parallel") {
 			ParallelGeneticAlgorithm ga(instance, build_config(), args.seed, args.num_threads);
 			run_result = ga.run();
+		} else if (args.variant == "islands") {
+			// Distribuir hilos entre islas: cada isla usa threads_per_island hilos internamente.
+			// Con --threads 8 y 4 islas: 2 hilos por isla (nivel externo=4, interno=2).
+			const int tpi = args.num_threads / DEFAULT_NUM_ISLANDS;
+			const int threads_per_island = tpi < 1 ? 1 : tpi;
+			IslandModel islands_model(instance, build_config(), DEFAULT_NUM_ISLANDS, DEFAULT_MIGRATION_INTERVAL,
+			                          DEFAULT_MIGRANTS_PER_ISLAND, args.seed, threads_per_island);
+			run_result = islands_model.run();
 		} else {
 			throw runtime_error("Variante no reconocida: '" + args.variant +
 			                    "'. Opciones disponibles: sequential, parallel, islands");
 		}
 
 		const double elapsed_ms =
-		    std::chrono::duration<double, std::milli>(std::chrono::steady_clock::now() - t_start)
-		        .count();
+		    std::chrono::duration<double, std::milli>(std::chrono::steady_clock::now() - t_start).count();
 
 		fmt::print("Variante: {}\n", args.variant);
 		fmt::print("Hilos: {}\n", args.num_threads);
 		fmt::print("Semilla: {}\n", args.seed);
 		fmt::print("Generaciones ejecutadas: {}\n", run_result.generations_executed);
 		fmt::print("Mejor fitness: {:.3f}\n", run_result.best_by_fitness.evaluation.fitness);
-		fmt::print("Mejor valor total: {:.3f}\n",
-		           run_result.best_by_fitness.evaluation.total_value);
+		fmt::print("Mejor valor total: {:.3f}\n", run_result.best_by_fitness.evaluation.total_value);
 		fmt::print("Factible (restricciones duras): {}\n",
 		           run_result.best_by_fitness.evaluation.feasible_hard ? "si" : "no");
 		fmt::print("Penalizacion total: {:.3f}\n", run_result.best_by_fitness.evaluation.penalty);
 		fmt::print("Tiempo de ejecucion: {:.3f} ms\n", elapsed_ms);
 
 		if (run_result.has_feasible) {
-			fmt::print("Mejor fitness factible: {:.3f}\n",
-			           run_result.best_feasible.evaluation.fitness);
+			fmt::print("Mejor fitness factible: {:.3f}\n", run_result.best_feasible.evaluation.fitness);
 		} else {
 			fmt::print("No se encontro solucion factible en restricciones duras\n");
 		}
 
 		if (!args.output_csv.empty()) {
-			write_csv_row(args.output_csv, args.variant, args.num_threads, args.seed, run_result,
+			write_csv_row(args.output_csv, args.input_file, args.variant, args.num_threads, args.seed, run_result,
 			              elapsed_ms);
 		}
 

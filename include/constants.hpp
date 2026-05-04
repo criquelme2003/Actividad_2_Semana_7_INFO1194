@@ -19,4 +19,9 @@ inline constexpr double PENALTY_GAMMA = 3.0;
 inline constexpr double PENALTY_DELTA = 40.0;
 inline constexpr double PENALTY_EPSILON = 40.0;
 
+// Modelo de islas (Variante 3)
+inline constexpr int DEFAULT_NUM_ISLANDS = 4;
+inline constexpr int DEFAULT_MIGRATION_INTERVAL = 25; // generaciones entre migraciones
+inline constexpr int DEFAULT_MIGRANTS_PER_ISLAND = 2; // individuos que migran por isla
+
 } // namespace constants
