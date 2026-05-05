@@ -99,52 +99,48 @@ vector<EvaluatedIndividual> GeneticAlgorithm::evaluate_population(const vector<C
 // Retorna el mejor resultado encontrado (por fitness y el mejor factible).
 GARunResult GeneticAlgorithm::run() {
 	// --- INICIALIZACIÓN ---
-	// Se genera la población de partida con individuos aleatorios
-	vector<Chromosome> population = make_initial_population();
+	if (population_.empty()) {
+		population_ = make_initial_population();
+	}
+	has_feasible_ = false;
 
 	GARunResult result{};
 	result.has_feasible = false;
-	int stagnation_counter = 0; // cuenta generaciones sin mejora del mejor fitness
+	int stagnation_counter = 0;
 
 	for (int generation = 0; generation < config_.generations; ++generation) {
 
 		// --- EVALUACIÓN ---
-		// Se calcula el fitness de cada individuo en la generación actual
-		auto evaluated = evaluate_population(population);
+		auto evaluated = evaluate_population(population_);
 
-		// Se ordenan de mayor a menor fitness para facilitar elitismo y búsqueda del mejor
 		sort(evaluated.begin(), evaluated.end(), [](const EvaluatedIndividual &a, const EvaluatedIndividual &b) {
 			return a.evaluation.fitness > b.evaluation.fitness;
 		});
 
 		// --- ACTUALIZACIÓN DEL MEJOR GLOBAL ---
-		// Si el mejor de esta generación supera al histórico, se actualiza y se reinicia
-		// el contador de estancamiento
 		if (generation == 0 || evaluated.front().evaluation.fitness > result.best_by_fitness.evaluation.fitness) {
 			result.best_by_fitness = evaluated.front();
+			best_by_fitness_ = evaluated.front();
 			stagnation_counter = 0;
 		} else {
-			// No hubo mejora: se acumula una generación de estancamiento
 			stagnation_counter++;
 		}
 
 		// --- MEJOR SOLUCIÓN FACTIBLE ---
-		// Se busca el primer individuo (el mejor por fitness ya que están ordenados)
-		// que cumpla todas las restricciones duras del problema
 		for (const auto &individual : evaluated) {
 			if (!individual.evaluation.feasible_hard) {
 				continue;
 			}
 			if (!result.has_feasible || individual.evaluation.fitness > result.best_feasible.evaluation.fitness) {
 				result.best_feasible = individual;
+				best_feasible_ = individual;
 				result.has_feasible = true;
+				has_feasible_ = true;
 			}
-			break; // Solo necesitamos el mejor factible de esta generación
+			break;
 		}
 
 		// --- CRITERIO DE PARADA TEMPRANA (estancamiento) ---
-		// Si el fitness no mejora durante max_stagnation_generations generaciones
-		// consecutivas, se corta la ejecución para ahorrar cómputo
 		if (stagnation_counter >= config_.max_stagnation_generations) {
 			result.generations_executed = generation + 1;
 			return result;
@@ -152,46 +148,139 @@ GARunResult GeneticAlgorithm::run() {
 
 		// --- CONSTRUCCIÓN DE LA NUEVA GENERACIÓN ---
 		vector<Chromosome> next_population;
-		next_population.reserve(population.size());
+		next_population.reserve(population_.size());
 
-		// ELITISMO: los mejores N individuos pasan directamente a la siguiente generación
-		// sin modificación. Esto garantiza que el mejor hallazgo nunca se pierda.
 		for (int elite = 0; elite < config_.elitism_count; ++elite) {
 			next_population.push_back(evaluated[static_cast<size_t>(elite)].chromosome);
 		}
 
-		// REPRODUCCIÓN: se rellena el resto de la población con hijos generados por
-		// selección + cruce + mutación, hasta alcanzar el tamaño objetivo
-		while (next_population.size() < population.size()) {
-
-			// SELECCIÓN POR TORNEO: se elige el padre A y el padre B de forma independiente.
-			// El torneo toma k individuos al azar y devuelve el de mayor fitness entre ellos.
-			// Un torneo mayor = más presión selectiva (ganan casi siempre los mejores).
+		while (next_population.size() < population_.size()) {
 			const size_t idx_a = tournament_select_index(evaluated, config_.tournament_size, rng_);
 			const size_t idx_b = tournament_select_index(evaluated, config_.tournament_size, rng_);
 
-			// CRUCE ONE-POINT: con probabilidad crossover_rate se elige un punto de corte
-			// aleatorio y se intercambian los segmentos finales de ambos padres,
-			// produciendo dos hijos que combinan material genético de ambos.
 			auto [child_a, child_b] = crossover_one_point(evaluated[idx_a].chromosome, evaluated[idx_b].chromosome,
 			                                              config_.crossover_rate, rng_);
 
-			// MUTACIÓN BIT-FLIP: cada gen de los hijos tiene probabilidad mutation_rate
-			// de invertirse (0→1 o 1→0). Introduce diversidad y evita convergencia prematura.
 			mutate_bit_flip(child_a, config_.mutation_rate, rng_);
 			mutate_bit_flip(child_b, config_.mutation_rate, rng_);
 
 			next_population.push_back(move(child_a));
-			// Solo se añade child_b si aún hay espacio (la población puede ser impar)
-			if (next_population.size() < population.size()) {
+			if (next_population.size() < population_.size()) {
 				next_population.push_back(move(child_b));
 			}
 		}
 
-		// La nueva generación reemplaza completamente a la anterior (reemplazo generacional)
-		population = move(next_population);
+		population_ = move(next_population);
 		result.generations_executed = generation + 1;
 	}
 
 	return result;
+}
+
+// ---------------------------------------------------------------------------
+// Interfaz para IslandModel (Variante 3)
+// ---------------------------------------------------------------------------
+
+// Evoluciona exactamente n generaciones sin criterio de parada temprana.
+// Si la población está vacía, la inicializa primero.
+// Actualiza best_by_fitness_ y best_feasible_ en cada generación.
+void GeneticAlgorithm::run_n_generations(const int n) {
+	if (population_.empty()) {
+		population_ = make_initial_population();
+	}
+
+	for (int g = 0; g < n; ++g) {
+		auto evaluated = evaluate_population(population_);
+
+		sort(evaluated.begin(), evaluated.end(), [](const EvaluatedIndividual &a, const EvaluatedIndividual &b) {
+			return a.evaluation.fitness > b.evaluation.fitness;
+		});
+
+		best_by_fitness_ = evaluated.front();
+
+		for (const auto &ind : evaluated) {
+			if (!ind.evaluation.feasible_hard) {
+				continue;
+			}
+			if (!has_feasible_ || ind.evaluation.fitness > best_feasible_.evaluation.fitness) {
+				best_feasible_ = ind;
+				has_feasible_ = true;
+			}
+			break;
+		}
+
+		vector<Chromosome> next_population;
+		next_population.reserve(population_.size());
+
+		for (int e = 0; e < config_.elitism_count; ++e) {
+			next_population.push_back(evaluated[static_cast<size_t>(e)].chromosome);
+		}
+
+		while (next_population.size() < population_.size()) {
+			const size_t idx_a = tournament_select_index(evaluated, config_.tournament_size, rng_);
+			const size_t idx_b = tournament_select_index(evaluated, config_.tournament_size, rng_);
+
+			auto [child_a, child_b] = crossover_one_point(evaluated[idx_a].chromosome, evaluated[idx_b].chromosome,
+			                                              config_.crossover_rate, rng_);
+
+			mutate_bit_flip(child_a, config_.mutation_rate, rng_);
+			mutate_bit_flip(child_b, config_.mutation_rate, rng_);
+
+			next_population.push_back(move(child_a));
+			if (next_population.size() < population_.size()) {
+				next_population.push_back(move(child_b));
+			}
+		}
+
+		population_ = move(next_population);
+	}
+}
+
+// Reemplaza los peores individuos de la población con los migrantes recibidos.
+void GeneticAlgorithm::inject_individuals(const vector<Chromosome> &migrants) {
+	if (population_.empty() || migrants.empty()) {
+		return;
+	}
+
+	auto evaluated = evaluate_population(population_);
+	sort(evaluated.begin(), evaluated.end(), [](const EvaluatedIndividual &a, const EvaluatedIndividual &b) {
+		return a.evaluation.fitness > b.evaluation.fitness;
+	});
+
+	const size_t replace_count = std::min(migrants.size(), population_.size());
+	const size_t pop_size = population_.size();
+
+	for (size_t i = 0; i < pop_size; ++i) {
+		population_[i] = evaluated[i].chromosome;
+	}
+
+	for (size_t i = 0; i < replace_count; ++i) {
+		population_[pop_size - 1 - i] = migrants[i];
+	}
+}
+
+EvaluatedIndividual GeneticAlgorithm::get_best() const { return best_by_fitness_; }
+
+EvaluatedIndividual GeneticAlgorithm::get_best_feasible() const { return best_feasible_; }
+
+bool GeneticAlgorithm::has_feasible_solution() const { return has_feasible_; }
+
+// Evalúa la población actual, la ordena y devuelve los n mejores cromosomas.
+vector<Chromosome> GeneticAlgorithm::get_top_n(const int n) const {
+	if (population_.empty() || n <= 0) {
+		return {};
+	}
+
+	auto evaluated = evaluate_population(population_);
+	sort(evaluated.begin(), evaluated.end(), [](const EvaluatedIndividual &a, const EvaluatedIndividual &b) {
+		return a.evaluation.fitness > b.evaluation.fitness;
+	});
+
+	const int count = std::min(n, static_cast<int>(evaluated.size()));
+	vector<Chromosome> top;
+	top.reserve(static_cast<size_t>(count));
+	for (int i = 0; i < count; ++i) {
+		top.push_back(evaluated[static_cast<size_t>(i)].chromosome);
+	}
+	return top;
 }

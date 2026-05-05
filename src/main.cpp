@@ -89,12 +89,10 @@ int main(int argc, char *argv[]) {
 			ParallelGeneticAlgorithm ga(instance, build_config(), args.seed, args.num_threads);
 			run_result = ga.run();
 		} else if (args.variant == "islands") {
-			// Distribuir hilos entre islas: cada isla usa threads_per_island hilos internamente.
-			// Con --threads 8 y 4 islas: 2 hilos por isla (nivel externo=4, interno=2).
-			const int tpi = args.num_threads / DEFAULT_NUM_ISLANDS;
-			const int threads_per_island = tpi < 1 ? 1 : tpi;
-			IslandModel islands_model(instance, build_config(), DEFAULT_NUM_ISLANDS, DEFAULT_MIGRATION_INTERVAL,
-			                          DEFAULT_MIGRANTS_PER_ISLAND, args.seed, threads_per_island);
+			// Cada hilo OpenMP corre una isla secuencial independiente.
+			// --threads N = N islas corriendo en paralelo (paralelismo grueso entre islas).
+			IslandModel islands_model(instance, build_config(), args.num_threads, DEFAULT_MIGRATION_INTERVAL,
+			                          DEFAULT_MIGRANTS_PER_ISLAND, args.seed);
 			run_result = islands_model.run();
 		} else {
 			throw runtime_error("Variante no reconocida: '" + args.variant +
