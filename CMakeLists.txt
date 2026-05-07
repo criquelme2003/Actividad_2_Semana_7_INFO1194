@@ -57,3 +57,27 @@ target_include_directories(${PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_BINARY_DIR}/_deps/fast-cpp-csv-parser-src
     ${argparse_SOURCE_DIR}/include
 )
+
+# ── Tests ────────────────────────────────────────────────────────────────────
+enable_testing()
+
+add_executable(test_fitness
+    tests/test_fitness.cpp
+    src/fitness.cpp
+)
+
+target_include_directories(test_fitness PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
+    ${CMAKE_CURRENT_BINARY_DIR}/_deps/fast-cpp-csv-parser-src
+    ${argparse_SOURCE_DIR}/include
+)
+
+add_test(NAME fitness_unit COMMAND test_fitness)
+
+add_test(
+    NAME ga_integration
+    COMMAND bash ${CMAKE_CURRENT_SOURCE_DIR}/tests/test_integration.sh
+            $<TARGET_FILE:${PROJECT_NAME}>
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+)
+set_tests_properties(ga_integration PROPERTIES DEPENDS ${PROJECT_NAME})

@@ -6,7 +6,7 @@ variant ?= sequential
 threads ?= 1
 seed ?= 123
 
-.PHONY: help configure build run watch lint format-check format rebuild clean
+.PHONY: help configure build run test watch lint format-check format rebuild clean
 
 SRC_FILES := $(shell git ls-files '*.cpp' '*.hpp' '*.h')
 
@@ -15,6 +15,7 @@ help:
 	@printf "  make configure              Genera archivos de build con CMake\n"
 	@printf "  make build                  Compila el proyecto\n"
 	@printf "  make run instance=\"...\" variant=\"...\" threads=\"...\" seed=\"...\"\n"
+	@printf "  make test                   Compila y ejecuta tests unitarios (validate_instance)\n"
 	@printf "  make watch                  Recompila y ejecuta al guardar cambios\n"
 	@printf "  make lint                   Ejecuta clang-tidy (si esta instalado)\n"
 	@printf "  make format-check           Verifica formato con clang-format\n"
@@ -32,6 +33,10 @@ build: configure
 
 run: build
 	./$(BUILD_DIR)/$(TARGET) --instance $(instance) --variant $(variant) --threads $(threads) --seed $(seed) -v
+
+test: configure
+	cmake --build $(BUILD_DIR) -j --target test_fitness --target $(TARGET)
+	ctest --test-dir $(BUILD_DIR) --output-on-failure -V
 
 watch:
 	@command -v entr >/dev/null 2>&1 || { printf "Instala 'entr' para usar watch mode (sudo apt install entr).\n"; exit 1; }

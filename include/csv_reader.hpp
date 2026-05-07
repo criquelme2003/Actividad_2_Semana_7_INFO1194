@@ -27,6 +27,9 @@ split_header_line(const std::string &header_line) {
 		if (idx >= N) {
 			return std::unexpected("CSV tiene columnas extra en el header");
 		}
+		if (!token.empty() && token.back() == '\r') {
+			token.pop_back();
+		}
 		parts[idx++] = token;
 	}
 
