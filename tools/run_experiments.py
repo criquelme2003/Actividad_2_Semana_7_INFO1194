@@ -16,7 +16,8 @@ Métricas registradas por el binario (§8):
   instance, variant, threads, seed, generations,
   best_fitness, best_value,
   best_feasible_fitness, best_feasible_value,
-  feasible, time_ms
+  feasible, time_ms,
+  best_feasible_items, best_feasible_weight, best_feasible_volume
 
 Speed-up y eficiencia se calculan en post-proceso a partir de time_ms.
 
