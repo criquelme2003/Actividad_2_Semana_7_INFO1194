@@ -7,7 +7,7 @@ import csv
 import statistics
 import collections
 
-INPUT = "results/resultados_clean.csv"
+INPUT = "results/resultados_carlos.csv"
 
 rows = []
 with open(INPUT) as f:
