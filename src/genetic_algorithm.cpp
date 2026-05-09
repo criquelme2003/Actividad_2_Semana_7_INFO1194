@@ -51,21 +51,8 @@ GeneticAlgorithm::GeneticAlgorithm(const ProblemInstance &instance, GAConfig con
 	}
 }
 
-// Crea un individuo con genes aleatorios.
-// Cada gen representa si el ítem i está incluido (1) o no (0) en la solución.
-// Se usa distribución de Bernoulli con p=0.5: cada bit tiene igual probabilidad.
 Chromosome GeneticAlgorithm::make_random_chromosome() {
-	Chromosome chromosome;
-
-	// Un gen por ítem del problema
-	chromosome.genes.resize(instance_.items.size(), 0U);
-	std::bernoulli_distribution bit(0.5);
-
-	for (auto &gene : chromosome.genes) {
-		gene = bit(rng_) ? 1U : 0U;
-	}
-
-	return chromosome;
+	return make_feasible_random_chromosome(instance_, rng_);
 }
 
 // Genera la población inicial: un conjunto de individuos completamente aleatorios.

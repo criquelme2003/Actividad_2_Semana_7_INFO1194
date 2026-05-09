@@ -59,13 +59,7 @@ ParallelGeneticAlgorithm::ParallelGeneticAlgorithm(const ProblemInstance &instan
 // ---------------------------------------------------------------------------
 
 Chromosome ParallelGeneticAlgorithm::make_random_chromosome() {
-	Chromosome chromosome;
-	chromosome.genes.resize(instance_.items.size(), 0U);
-	std::bernoulli_distribution bit(0.5);
-	for (auto &gene : chromosome.genes) {
-		gene = bit(master_rng_) ? 1U : 0U;
-	}
-	return chromosome;
+	return make_feasible_random_chromosome(instance_, master_rng_);
 }
 
 vector<Chromosome> ParallelGeneticAlgorithm::make_initial_population() {

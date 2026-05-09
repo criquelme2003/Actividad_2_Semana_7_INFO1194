@@ -23,11 +23,13 @@ GAConfig build_config() {
 	                .crossover_rate = DEFAULT_CROSSOVER_RATE,
 	                .mutation_rate = DEFAULT_MUTATION_RATE,
 	                .max_stagnation_generations = MAX_STAGNATION_GENERATIONS,
-	                .penalties = PenaltyConfig{.alpha = PENALTY_ALPHA,
-	                                           .beta = PENALTY_BETA,
-	                                           .gamma = PENALTY_GAMMA,
-	                                           .delta = PENALTY_DELTA,
-	                                           .epsilon = PENALTY_EPSILON}};
+	                .penalties = PenaltyConfig{.alpha      = PENALTY_ALPHA,
+	                                           .beta       = PENALTY_BETA,
+	                                           .w_weight   = PENALTY_W_WEIGHT,
+	                                           .w_volume   = PENALTY_W_VOLUME,
+	                                           .w_category = PENALTY_W_CATEGORY,
+	                                           .w_incompat = PENALTY_W_INCOMPAT,
+	                                           .w_dep      = PENALTY_W_DEP}};
 }
 
 static int count_selected(const Chromosome &c) {

@@ -26,6 +26,7 @@
 //   T5  [1,1,0,0,0]  → fitness=27,    feasible=true   (only category soft penalty)
 //   T6  [0,1,0,0,1]  → fitness=45,    feasible=true
 
+#include "constants.hpp"
 #include "fitness.hpp"
 #include "models.hpp"
 
@@ -106,11 +107,13 @@ static ProblemInstance make_instance() {
 
 static PenaltyConfig make_penalties() {
     return PenaltyConfig{
-        .alpha = 8.0,   // peso
-        .beta = 8.0,    // volumen
-        .gamma = 3.0,   // categoria
-        .delta = 40.0,  // incompatibilidad
-        .epsilon = 40.0 // dependencia
+        .alpha      = constants::PENALTY_ALPHA,
+        .beta       = constants::PENALTY_BETA,
+        .w_weight   = constants::PENALTY_W_WEIGHT,
+        .w_volume   = constants::PENALTY_W_VOLUME,
+        .w_category = constants::PENALTY_W_CATEGORY,
+        .w_incompat = constants::PENALTY_W_INCOMPAT,
+        .w_dep      = constants::PENALTY_W_DEP
     };
 }
 

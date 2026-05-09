@@ -21,11 +21,13 @@ struct CategoryRule {
 };
 
 struct PenaltyConfig {
-	double alpha;
-	double beta;
-	double gamma;
-	double delta;
-	double epsilon;
+	double alpha;      // α: peso del valor normalizado      (α + β = 1)
+	double beta;       // β: peso de la violación normalizada
+	double w_weight;   // w1: exceso de peso                 (Σwi = 1)
+	double w_volume;   // w2: exceso de volumen
+	double w_category; // w3: violaciones de categoría
+	double w_incompat; // w4: incompatibilidades
+	double w_dep;      // w5: dependencias incumplidas
 };
 
 struct ProblemInstance {
@@ -38,6 +40,9 @@ struct ProblemInstance {
 	std::unordered_map<int, std::size_t> id_to_index;
 	double max_weight;
 	double max_volume;
+	double total_weight;
+	double total_volume;
+	double max_possible_value;
 };
 
 struct Chromosome {
