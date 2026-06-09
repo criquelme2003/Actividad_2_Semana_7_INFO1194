@@ -4,8 +4,9 @@ namespace constants {
 
 inline constexpr int DEFAULT_GENERATIONS = 200;
 inline constexpr int DEFAULT_POPULATION_SIZE = 120;
-inline constexpr int DEFAULT_TOURNAMENT_SIZE = 3;
 inline constexpr int DEFAULT_ELITISM_COUNT = 2;
+inline constexpr int RANK_SELECTION_COUNT = 10;
+inline constexpr double RANK_SELECTION_P = 0.5;
 inline constexpr int DEFAULT_SEED = 123;
 inline constexpr int MAX_STAGNATION_GENERATIONS = 50;
 

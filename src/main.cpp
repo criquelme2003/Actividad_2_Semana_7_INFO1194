@@ -14,7 +14,6 @@ namespace {
 GAConfig build_config() {
 	return GAConfig{.population_size = DEFAULT_POPULATION_SIZE,
 	                .generations = DEFAULT_GENERATIONS,
-	                .tournament_size = DEFAULT_TOURNAMENT_SIZE,
 	                .elitism_count = DEFAULT_ELITISM_COUNT,
 	                .crossover_rate = DEFAULT_CROSSOVER_RATE,
 	                .mutation_rate = DEFAULT_MUTATION_RATE,

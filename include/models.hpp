@@ -64,7 +64,6 @@ struct EvaluatedIndividual {
 struct GAConfig {
 	int population_size;
 	int generations;
-	int tournament_size;
 	int elitism_count;
 	double crossover_rate;
 	double mutation_rate;

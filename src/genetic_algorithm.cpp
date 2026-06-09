@@ -1,14 +1,17 @@
 #include "genetic_algorithm.hpp"
 
+#include "constants.hpp"
 #include "operators.hpp"
 #include "selection.hpp"
 #include <algorithm>
+#include <random>
 #include <stdexcept>
 
 using std::invalid_argument;
 using std::move;
 using std::size_t;
 using std::sort;
+using std::uniform_real_distribution;
 using std::vector;
 
 GeneticAlgorithm::GeneticAlgorithm(const ProblemInstance &instance, GAConfig config, const int seed)
@@ -24,10 +27,6 @@ GeneticAlgorithm::GeneticAlgorithm(const ProblemInstance &instance, GAConfig con
 
 	if (config_.generations <= 0) {
 		throw invalid_argument("generations debe ser mayor a 0");
-	}
-
-	if (config_.tournament_size <= 0 || config_.tournament_size > config_.population_size) {
-		throw invalid_argument("tournament_size invalido");
 	}
 
 	if (config_.elitism_count < 0 || config_.elitism_count >= config_.population_size) {
@@ -102,10 +101,12 @@ GARunResult GeneticAlgorithm::run() {
 			if (!individual.evaluation.feasible_hard) {
 				continue;
 			}
+
 			if (!result.has_feasible || individual.evaluation.fitness > result.best_feasible.evaluation.fitness) {
 				result.best_feasible = individual;
 				result.has_feasible = true;
 			}
+
 			break;
 		}
 
@@ -121,23 +122,32 @@ GARunResult GeneticAlgorithm::run() {
 			next_population.push_back(evaluated[static_cast<size_t>(elite)].chromosome);
 		}
 
-		while (next_population.size() < population.size()) {
-			const size_t idx_a = tournament_select_index(evaluated, config_.tournament_size, rng_);
-			const size_t idx_b = tournament_select_index(evaluated, config_.tournament_size, rng_);
+		const auto cum_probs =
+		    compute_rank_cumulative_probs(constants::RANK_SELECTION_COUNT, constants::RANK_SELECTION_P);
 
-			auto [child_a, child_b] = crossover_one_point(evaluated[idx_a].chromosome, evaluated[idx_b].chromosome,
+		while (next_population.size() < population.size()) {
+			const size_t rank_a = rank_select_index(cum_probs, rng_);
+			size_t rank_b = rank_select_index(cum_probs, rng_);
+
+			while (rank_a == rank_b) {
+				rank_b = rank_select_index(cum_probs, rng_);
+			}
+
+			auto [child_a, child_b] = crossover_one_point(evaluated[rank_a].chromosome, evaluated[rank_b].chromosome,
 			                                              config_.crossover_rate, rng_);
 
 			mutate_bit_flip(child_a, config_.mutation_rate, rng_);
 			mutate_bit_flip(child_b, config_.mutation_rate, rng_);
 
 			next_population.push_back(move(child_a));
+
 			if (next_population.size() < population.size()) {
 				next_population.push_back(move(child_b));
 			}
 		}
 
 		population = move(next_population);
+
 		result.generations_executed = generation + 1;
 	}
 

@@ -1,9 +1,11 @@
 #pragma once
 
-#include "models.hpp"
 #include <random>
 #include <vector>
 
+std::vector<double>
+compute_rank_cumulative_probs(int rank_count, double p);
+
 std::size_t
-tournament_select_index(const std::vector<EvaluatedIndividual> &population,
-                        int tournament_size, std::mt19937 &rng);
+rank_select_index(const std::vector<double> &cumulative_probs,
+                  std::mt19937 &rng);

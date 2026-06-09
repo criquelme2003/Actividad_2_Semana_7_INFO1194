@@ -13,9 +13,7 @@ CliArguments::CliArguments(int argc, char *argv[]) {
 	argparse::ArgumentParser program("mochila_ga");
 
 	program.add_argument("--instance").help("Ruta de la instancia/archivo de entrada").required();
-
 	program.add_argument("--variant").help("Variante del algoritmo").default_value(string("sequential"));
-
 	program.add_argument("-t", "--threads").help("Número de hilos para OpenMP").default_value(1).scan<'i', int>();
 
 	program.add_argument("--seed")
