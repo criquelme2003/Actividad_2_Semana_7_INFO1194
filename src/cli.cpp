@@ -16,6 +16,11 @@ CliArguments::CliArguments(int argc, char *argv[]) {
 	program.add_argument("--variant").help("Variante del algoritmo").default_value(string("sequential"));
 	program.add_argument("-t", "--threads").help("Número de hilos para OpenMP").default_value(1).scan<'i', int>();
 
+	program.add_argument("--block-size")
+	    .help("Tamaño de bloque CUDA (hilos por bloque)")
+	    .default_value(constants::DEFAULT_BLOCK_SIZE)
+	    .scan<'i', int>();
+
 	program.add_argument("--seed")
 	    .help("Semilla para reproducibilidad")
 	    .default_value(constants::DEFAULT_SEED)
@@ -34,6 +39,7 @@ CliArguments::CliArguments(int argc, char *argv[]) {
 	variant = program.get<string>("--variant");
 	seed = program.get<int>("--seed");
 	num_threads = program.get<int>("--threads");
+	block_size = program.get<int>("--block-size");
 	verbose = program.get<bool>("--verbose");
 }
 

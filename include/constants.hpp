@@ -14,6 +14,10 @@ inline constexpr double DEFAULT_CROSSOVER_RATE = 0.85;
 inline constexpr double DEFAULT_MUTATION_RATE = 0.02;
 inline constexpr double DEFAULT_CAPACITY_RATIO = 0.40;
 
+// ─── Constantes CUDA ──────────────────────────────────────────────────────────
+inline constexpr int DEFAULT_BLOCK_SIZE = 256;
+inline constexpr int DEFAULT_TOURNAMENT_SIZE = 3;
+
 inline constexpr double PENALTY_ALPHA = 8.0;
 inline constexpr double PENALTY_BETA = 8.0;
 inline constexpr double PENALTY_GAMMA = 3.0;
