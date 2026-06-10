@@ -64,6 +64,15 @@ struct GACudaContext {
 	curandState *d_rng_states; // [pop_size] un estado cuRAND por individuo
 	int *d_selected_a;         // [pop_size] índices de padres A (torneo)
 	int *d_selected_b;         // [pop_size] índices de padres B (torneo)
+	
+	// Resultados parciales (1 valor por bloque) de la reducción
+	// "mejor individuo" / "mejor individuo factible".
+	int *d_block_best_idx;                  // [grid_pop]
+	double *d_block_best_fitness;           // [grid_pop]
+	int *d_block_best_feasible_idx;         // [grid_pop]
+	double *d_block_best_feasible_fitness;  // [grid_pop]
+	int grid_pop;                           // = ceil(pop_size / block_size)
+
 	int pop_size;
 	int n_items;
 	int block_size;
@@ -120,12 +129,24 @@ __global__ void kernel_crossover(const uint8_t *__restrict__ d_population, uint8
 __global__ void kernel_mutation(uint8_t *d_new_population, curandState *d_rng_states, int pop_size, int n_items,
                                 double mutation_rate);
 
-// Actualización de la generación con elitismo:
-// - Copia d_new_population sobre d_population.
-// - Preserva los elitism_count mejores individuos (índices en d_elite_indices).
-__global__ void kernel_update_population(uint8_t *d_population, const uint8_t *__restrict__ d_new_population,
-                                         const int *__restrict__ d_elite_indices, int elitism_count, int pop_size,
-                                         int n_items);
+// Preserva los elitism_count mejores individuos: copia
+// d_population[d_elite_indices[i]] -> d_new_population[i] para i < elitism_count.
+// Debe ejecutarse después de cruzamiento/mutación y antes de kernel_update_population.
+__global__ void kernel_preserve_elites(const uint8_t *__restrict__ d_population, uint8_t *__restrict__ d_new_population,
+                                       const int *__restrict__ d_elite_indices, int elitism_count, int n_items);
+
+// Actualización de la generación: copia d_new_population sobre d_population.
+__global__ void kernel_update_population(uint8_t *__restrict__ d_population,
+                                         const uint8_t *__restrict__ d_new_population, int pop_size, int n_items);
+
+// Reducción paralela (a nivel de bloque) que calcula, para cada bloque:
+//   - el índice y fitness del mejor individuo (cualquier factibilidad)
+//   - el índice y fitness del mejor individuo factible (-1 si ninguno)
+// Resultados parciales (1 por bloque) en los arreglos d_block_best_*.
+// Asume blockDim.x potencia de 2.
+__global__ void kernel_find_best_feasible(const double *__restrict__ d_fitness, const uint8_t *__restrict__ d_feasible,
+                                          int pop_size, int *d_block_best_idx, double *d_block_best_fitness,
+                                          int *d_block_best_feasible_idx, double *d_block_best_feasible_fitness);
 
 // FUNCIÓN DE ENTRADA — Variante 2: CUDA básico
 // Declarada aquí e implementada en src/genetic_algorithm_cuda.cu

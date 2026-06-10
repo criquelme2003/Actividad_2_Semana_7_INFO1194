@@ -288,6 +288,14 @@ static GACudaContext alloc_cuda_context(int pop_size, int n_items, int block_siz
 	CUDA_CHECK(cudaMalloc(&ctx.d_selected_a, pop_size * sizeof(int)));
 	CUDA_CHECK(cudaMalloc(&ctx.d_selected_b, pop_size * sizeof(int)));
 
+	// Resultados parciales (1 valor por bloque) de la reducción "mejor individuo" /
+	// "mejor individuo factible".
+	ctx.grid_pop = (pop_size + block_size - 1) / block_size;
+	CUDA_CHECK(cudaMalloc(&ctx.d_block_best_idx, ctx.grid_pop * sizeof(int)));
+	CUDA_CHECK(cudaMalloc(&ctx.d_block_best_fitness, ctx.grid_pop * sizeof(double)));
+	CUDA_CHECK(cudaMalloc(&ctx.d_block_best_feasible_idx, ctx.grid_pop * sizeof(int)));
+	CUDA_CHECK(cudaMalloc(&ctx.d_block_best_feasible_fitness, ctx.grid_pop * sizeof(double)));
+
 	return ctx;
 }
 
@@ -299,6 +307,10 @@ static void free_cuda_context(GACudaContext &ctx) {
 	cudaFree(ctx.d_rng_states);
 	cudaFree(ctx.d_selected_a);
 	cudaFree(ctx.d_selected_b);
+	cudaFree(ctx.d_block_best_idx);
+	cudaFree(ctx.d_block_best_fitness);
+	cudaFree(ctx.d_block_best_feasible_idx);
+	cudaFree(ctx.d_block_best_feasible_fitness);
 	ctx = GACudaContext{};
 }
 
@@ -346,9 +358,18 @@ GARunResult run_genetic_algorithm_cuda_basic(const ProblemInstance &instance, co
 	CUDA_CHECK(cudaGetLastError());
 	CUDA_CHECK(cudaDeviceSynchronize());
 
-	// Buffers host: solo fitness y feasible, nunca la población completa
+	// Buffers host: solo fitness, nunca la población completa.
+	// (d_feasible ya no se transfiere completo: el kernel de reducción lo
+	// resume en grid_pop valores).
 	vector<double> h_fitness(pop_size);
-	vector<uint8_t> h_feasible(pop_size);
+
+	// Resultados de la reducción "mejor individuo" / "mejor factible" (1 valor por bloque)
+	vector<int> h_block_best_idx(ctx.grid_pop);
+	vector<double> h_block_best_fitness(ctx.grid_pop);
+	vector<int> h_block_best_feasible_idx(ctx.grid_pop);
+	vector<double> h_block_best_feasible_fitness(ctx.grid_pop);
+
+	const size_t reduction_shared_bytes = static_cast<size_t>(block_size) * (2 * sizeof(double) + 2 * sizeof(int));
 
 	// Evaluador CPU para recalcular FitnessBreakdown completo del mejor individuo
 	FitnessEvaluator cpu_evaluator(instance, config.penalties);
@@ -370,20 +391,45 @@ GARunResult run_genetic_algorithm_cuda_basic(const ProblemInstance &instance, co
 		CUDA_CHECK(cudaGetLastError());
 		CUDA_CHECK(cudaDeviceSynchronize());
 
-		// Transferir fitness al host (no la población completa)
+		// Transferir fitness completo al host (lo necesita partial_sort para elitismo)
 		CUDA_CHECK(cudaMemcpy(h_fitness.data(), ctx.d_fitness, pop_size * sizeof(double), cudaMemcpyDeviceToHost));
-		CUDA_CHECK(cudaMemcpy(h_feasible.data(), ctx.d_feasible, pop_size * sizeof(uint8_t), cudaMemcpyDeviceToHost));
 
-		// Tracking del mejor (estancamiento)
-		int best_idx = 0;
-		double gen_best_fit = h_fitness[0];
-		for (int i = 1; i < pop_size; ++i) {
-			if (h_fitness[i] > gen_best_fit) {
-				gen_best_fit = h_fitness[i];
-				best_idx = i;
+		// Reducción en GPU: mejor individuo (global) y mejor individuo factible,
+		// resumidos en grid_pop valores parciales (1 por bloque).
+		kernel_find_best_feasible<<<grid_pop, block_size, reduction_shared_bytes>>>(
+		    ctx.d_fitness, ctx.d_feasible, pop_size, ctx.d_block_best_idx, ctx.d_block_best_fitness,
+		    ctx.d_block_best_feasible_idx, ctx.d_block_best_feasible_fitness);
+		CUDA_CHECK(cudaGetLastError());
+		CUDA_CHECK(cudaDeviceSynchronize());
+
+		CUDA_CHECK(cudaMemcpy(h_block_best_idx.data(), ctx.d_block_best_idx, ctx.grid_pop * sizeof(int),
+		                      cudaMemcpyDeviceToHost));
+		CUDA_CHECK(cudaMemcpy(h_block_best_fitness.data(), ctx.d_block_best_fitness, ctx.grid_pop * sizeof(double),
+		                      cudaMemcpyDeviceToHost));
+		CUDA_CHECK(cudaMemcpy(h_block_best_feasible_idx.data(), ctx.d_block_best_feasible_idx,
+		                      ctx.grid_pop * sizeof(int), cudaMemcpyDeviceToHost));
+		CUDA_CHECK(cudaMemcpy(h_block_best_feasible_fitness.data(), ctx.d_block_best_feasible_fitness,
+		                      ctx.grid_pop * sizeof(double), cudaMemcpyDeviceToHost));
+
+		// Reducción final (sobre grid_pop elementos) en CPU
+		int best_idx = h_block_best_idx[0];
+		double gen_best_fit = h_block_best_fitness[0];
+		int best_feasible_idx = h_block_best_feasible_idx[0];
+		double gen_best_feasible_fit = h_block_best_feasible_fitness[0];
+
+		for (int b = 1; b < ctx.grid_pop; ++b) {
+			if (h_block_best_fitness[b] > gen_best_fit) {
+				gen_best_fit = h_block_best_fitness[b];
+				best_idx = h_block_best_idx[b];
+			}
+			if (h_block_best_feasible_idx[b] >= 0 &&
+			    (best_feasible_idx < 0 || h_block_best_feasible_fitness[b] > gen_best_feasible_fit)) {
+				gen_best_feasible_fit = h_block_best_feasible_fitness[b];
+				best_feasible_idx = h_block_best_feasible_idx[b];
 			}
 		}
 
+		// Tracking del mejor (estancamiento)
 		if (gen == 0 || gen_best_fit > best_fitness_ever) {
 			best_fitness_ever = gen_best_fit;
 			stagnation_counter = 0;
@@ -399,28 +445,18 @@ GARunResult run_genetic_algorithm_cuda_basic(const ProblemInstance &instance, co
 		}
 
 		// Tracking del mejor individuo factible
-		for (int i = 0; i < pop_size; ++i) {
-			if (h_feasible[i] == 1U && h_fitness[i] > best_feasible_ever) {
-				best_feasible_ever = h_fitness[i];
+		if (best_feasible_idx >= 0 && gen_best_feasible_fit > best_feasible_ever) {
+			best_feasible_ever = gen_best_feasible_fit;
 
-				// Copiar su cromosoma y re-evaluar en CPU
-				Chromosome feas_chrom;
-				feas_chrom.genes.resize(static_cast<size_t>(n_items));
-				CUDA_CHECK(cudaMemcpy(feas_chrom.genes.data(), ctx.d_population + static_cast<size_t>(i) * n_items,
-				                      n_items * sizeof(uint8_t), cudaMemcpyDeviceToHost));
-				result.best_feasible = {feas_chrom, cpu_evaluator.evaluate(feas_chrom)};
-				result.has_feasible = true;
-			}
+			// Copiar su cromosoma y re-evaluar en CPU
+			Chromosome feas_chrom;
+			feas_chrom.genes.resize(static_cast<size_t>(n_items));
+			CUDA_CHECK(cudaMemcpy(feas_chrom.genes.data(),
+			                      ctx.d_population + static_cast<size_t>(best_feasible_idx) * n_items,
+			                      n_items * sizeof(uint8_t), cudaMemcpyDeviceToHost));
+			result.best_feasible = {feas_chrom, cpu_evaluator.evaluate(feas_chrom)};
+			result.has_feasible = true;
 		}
-
-		// Calcular índices de élite en CPU y subirlos al device
-		vector<int> indices(pop_size);
-		std::iota(indices.begin(), indices.end(), 0);
-		std::partial_sort(indices.begin(), indices.begin() + config.elitism_count, indices.end(),
-		                  [&h_fitness](int a, int b) { return h_fitness[a] > h_fitness[b]; });
-
-		CUDA_CHECK(
-		    cudaMemcpy(d_elite_indices, indices.data(), config.elitism_count * sizeof(int), cudaMemcpyHostToDevice));
 
 		result.generations_executed = gen + 1;
 
@@ -429,7 +465,19 @@ GARunResult run_genetic_algorithm_cuda_basic(const ProblemInstance &instance, co
 			break;
 		}
 
-		// Operadores genéticos (Cristóbal)
+		// Calcular índices de élite en CPU y subirlos al device.
+		// Se hace aquí (después del break) porque d_elite_indices solo es
+		// necesario para kernel_preserve_elites, que viene a continuación.
+		// Hacerlo antes del break era trabajo innecesario en la última generación.
+		vector<int> indices(pop_size);
+		std::iota(indices.begin(), indices.end(), 0);
+		std::partial_sort(indices.begin(), indices.begin() + config.elitism_count, indices.end(),
+		                  [&h_fitness](int a, int b) { return h_fitness[a] > h_fitness[b]; });
+
+		CUDA_CHECK(
+		    cudaMemcpy(d_elite_indices, indices.data(), config.elitism_count * sizeof(int), cudaMemcpyHostToDevice));
+
+		// Operadores genéticos
 
 		// Selección por torneo
 		kernel_tournament_selection<<<grid_pop, block_size>>>(
@@ -451,9 +499,18 @@ GARunResult run_genetic_algorithm_cuda_basic(const ProblemInstance &instance, co
 		CUDA_CHECK(cudaGetLastError());
 		CUDA_CHECK(cudaDeviceSynchronize());
 
-		// Actualización con elitismo
-		kernel_update_population<<<grid_pop, block_size>>>(ctx.d_population, ctx.d_new_population, d_elite_indices,
-		                                                   config.elitism_count, pop_size, n_items);
+		// Preservar élites: copiar los config.elitism_count mejores individuos de
+		// d_population (generación actual) hacia d_new_population, ANTES de
+		// sobrescribir d_population. Debe ir después de cruzamiento/mutación
+		// (que escriben sobre d_new_population) y antes de la actualización.
+		const int grid_elite = (config.elitism_count + block_size - 1) / block_size;
+		kernel_preserve_elites<<<grid_elite, block_size>>>(ctx.d_population, ctx.d_new_population, d_elite_indices,
+		                                                   config.elitism_count, n_items);
+		CUDA_CHECK(cudaGetLastError());
+		CUDA_CHECK(cudaDeviceSynchronize());
+
+		// Actualización: copiar d_new_population -> d_population
+		kernel_update_population<<<grid_pop, block_size>>>(ctx.d_population, ctx.d_new_population, pop_size, n_items);
 		CUDA_CHECK(cudaGetLastError());
 		CUDA_CHECK(cudaDeviceSynchronize());
 	}
