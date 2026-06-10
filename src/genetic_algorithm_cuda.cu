@@ -458,7 +458,17 @@ GARunResult run_genetic_algorithm_cuda_basic(const ProblemInstance &instance, co
 			result.has_feasible = true;
 		}
 
-		// Calcular índices de élite en CPU y subirlos al device
+		result.generations_executed = gen + 1;
+
+		// Criterio de término por estancamiento
+		if (stagnation_counter >= config.max_stagnation_generations) {
+			break;
+		}
+
+		// Calcular índices de élite en CPU y subirlos al device.
+		// Se hace aquí (después del break) porque d_elite_indices solo es
+		// necesario para kernel_preserve_elites, que viene a continuación.
+		// Hacerlo antes del break era trabajo innecesario en la última generación.
 		vector<int> indices(pop_size);
 		std::iota(indices.begin(), indices.end(), 0);
 		std::partial_sort(indices.begin(), indices.begin() + config.elitism_count, indices.end(),
@@ -466,13 +476,6 @@ GARunResult run_genetic_algorithm_cuda_basic(const ProblemInstance &instance, co
 
 		CUDA_CHECK(
 		    cudaMemcpy(d_elite_indices, indices.data(), config.elitism_count * sizeof(int), cudaMemcpyHostToDevice));
-
-		result.generations_executed = gen + 1;
-
-		// Criterio de término por estancamiento
-		if (stagnation_counter >= config.max_stagnation_generations) {
-			break;
-		}
 
 		// Operadores genéticos
 
