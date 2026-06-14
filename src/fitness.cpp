@@ -1,5 +1,6 @@
 #include "fitness.hpp"
 
+#include "constants.hpp"
 #include <algorithm>
 #include <unordered_map>
 
@@ -61,15 +62,39 @@ FitnessBreakdown FitnessEvaluator::evaluate(const Chromosome &chromosome) const 
 		}
 	}
 
-	out.penalty = penalties_.alpha * excess_weight + penalties_.beta * excess_volume +
-	              penalties_.gamma * static_cast<double>(out.category_violations) +
-	              penalties_.delta * static_cast<double>(out.incompatibility_violations) +
-	              penalties_.epsilon * static_cast<double>(out.dependency_violations);
+	// Valor normalizado: fracción del máximo valor posible de la instancia
+	const double valor_norm = instance_.max_possible_value > 0.0
+	                              ? out.total_value / instance_.max_possible_value
+	                              : 0.0;
 
-	out.fitness = out.total_value - out.penalty;
+	// Máximos de cada tipo de violación (denominadores Pi_max)
+	const double max_excess_w = instance_.total_weight - instance_.max_weight;
+	const double max_excess_v = instance_.total_volume - instance_.max_volume;
+	const double max_cat      = static_cast<double>(instance_.items.size());
+	const double max_incompat = static_cast<double>(std::max(size_t{1}, instance_.incompatibility_indices.size()));
+	const double max_dep      = static_cast<double>(std::max(size_t{1}, instance_.dependency_indices.size()));
 
-	out.feasible_hard = (excess_weight <= 0.0) && (excess_volume <= 0.0) && out.incompatibility_violations == 0 &&
-	                    out.dependency_violations == 0;
+	// Violaciones normalizadas Pi(x) / Pi_max, acotadas en [0, 1]
+	const double p1 = std::min(1.0, excess_weight / max_excess_w);
+	const double p2 = std::min(1.0, excess_volume / max_excess_v);
+	const double p3 = std::min(1.0, static_cast<double>(out.category_violations)        / max_cat);
+	const double p4 = instance_.incompatibility_indices.empty() ? 0.0
+	                  : std::min(1.0, static_cast<double>(out.incompatibility_violations) / max_incompat);
+	const double p5 = instance_.dependency_indices.empty() ? 0.0
+	                  : std::min(1.0, static_cast<double>(out.dependency_violations)      / max_dep);
+
+	const double violacion_norm = penalties_.w_weight   * p1
+	                            + penalties_.w_volume    * p2
+	                            + penalties_.w_category  * p3
+	                            + penalties_.w_incompat  * p4
+	                            + penalties_.w_dep       * p5;
+
+	out.penalty = penalties_.beta * violacion_norm;
+	out.fitness = penalties_.alpha * valor_norm - out.penalty;
+
+	out.feasible_hard = (out.total_weight <= instance_.max_weight + constants::FEASIBILITY_EPSILON) &&
+	                    (out.total_volume <= instance_.max_volume + constants::FEASIBILITY_EPSILON) &&
+	                    out.incompatibility_violations == 0 && out.dependency_violations == 0;
 
 	return out;
 }

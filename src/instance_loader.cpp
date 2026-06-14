@@ -188,6 +188,11 @@ load_problem_instance(const std::string &instance_path, double capacity_ratio) {
 
 	instance.max_weight = total_weight * capacity_ratio;
 	instance.max_volume = total_volume * capacity_ratio;
+	instance.total_weight = total_weight;
+	instance.total_volume = total_volume;
+	instance.max_possible_value = std::accumulate(
+	    instance.items.begin(), instance.items.end(), 0.0,
+	    [](double sum, const Item &item) { return sum + item.value; });
 
 	return instance;
 }

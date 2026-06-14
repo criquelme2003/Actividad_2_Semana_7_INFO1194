@@ -1,12 +1,17 @@
 // genetic_algorithm_cuda.cu  —  Variante 2: CUDA básico
-// Kernels: kernel_init_rng, kernel_init_population, kernel_evaluate_fitness
+// Kernels: kernel_init_rng, kernel_evaluate_fitness
 // Funciones host: upload_instance, alloc/free helpers, run_genetic_algorithm_cuda_basic
+// La población inicial factible se genera en host (make_feasible_random_chromosome)
+// y se transfiere al device antes del loop principal.
 
+#include "constants.hpp"
 #include "fitness.hpp"
 #include "genetic_algorithm_cuda.cuh"
+#include "operators.hpp"
 
 #include <algorithm>
 #include <numeric>
+#include <random>
 #include <stdexcept>
 #include <string>
 #include <unordered_map>
@@ -37,25 +42,6 @@ __global__ void kernel_init_rng(curandState *d_rng_states, int pop_size, unsigne
 	curand_init(seed, static_cast<unsigned long long>(idx), 0ULL, &d_rng_states[idx]);
 }
 
-// kernel_init_population — Genera la población inicial (Bernoulli 0.5 por gen).
-// 1 hilo = 1 individuo. Estado cuRAND cargado a registro local para evitar
-// accesos repetidos a memoria global dentro del loop.
-__global__ void kernel_init_population(uint8_t *d_population, int pop_size, int n_items, curandState *d_rng_states) {
-	int idx = blockIdx.x * blockDim.x + threadIdx.x;
-	if (idx >= pop_size)
-		return;
-
-	curandState local_state = d_rng_states[idx]; // registro local: evita accesos globales en el loop
-
-	uint8_t *genes = d_population + static_cast<size_t>(idx) * n_items;
-
-	for (int i = 0; i < n_items; ++i) {
-		genes[i] = (curand_uniform(&local_state) < 0.5f) ? 1U : 0U;
-	}
-
-	d_rng_states[idx] = local_state; // devolver estado actualizado a memoria global
-}
-
 // kernel_evaluate_fitness — Evalúa el fitness de todos los individuos.
 // Estrategia: 1 hilo = 1 individuo (independencia total, sin sincronización).
 // Pasos: (1) acumular valor/peso/volumen, (2) excesos de capacidad [duras],
@@ -68,7 +54,8 @@ __global__ void kernel_evaluate_fitness(const uint8_t *__restrict__ d_population
                                         const int *__restrict__ d_incomp_a, const int *__restrict__ d_incomp_b,
                                         int n_incomp, const int *__restrict__ d_dep_item,
                                         const int *__restrict__ d_dep_req, int n_dep, double max_weight,
-                                        double max_volume, GpuPenalties penalties, double *d_fitness,
+                                        double max_volume, double inst_total_weight, double inst_total_volume,
+                                        double max_possible_value, GpuPenalties penalties, double *d_fitness,
                                         uint8_t *d_feasible, int pop_size, int n_items) {
 
 	int idx = blockIdx.x * blockDim.x + threadIdx.x;
@@ -134,18 +121,34 @@ __global__ void kernel_evaluate_fitness(const uint8_t *__restrict__ d_population
 		}
 	}
 
-	// Paso 6: fitness y factibilidad dura
+	// Paso 6: fitness normalizado y factibilidad dura
+	// fitness = alpha*valor_norm - beta*violacion_norm.
 	// Factibilidad dura: peso, volumen, incompatibilidades y dependencias.
 	// Categoría es restricción blanda (penaliza pero no invalida).
-	double penalty = penalties.alpha * excess_weight + penalties.beta * excess_volume +
-	                 penalties.gamma * static_cast<double>(cat_violations) +
-	                 penalties.delta * static_cast<double>(incomp_violations) +
-	                 penalties.epsilon * static_cast<double>(dep_violations);
+	double valor_norm = (max_possible_value > 0.0) ? (total_value / max_possible_value) : 0.0;
 
-	d_fitness[idx] = total_value - penalty;
+	double max_excess_w = inst_total_weight - max_weight;
+	double max_excess_v = inst_total_volume - max_volume;
+	double max_cat = static_cast<double>(n_items);
+	double max_incompat = static_cast<double>((n_incomp > 0) ? n_incomp : 1);
+	double max_dep = static_cast<double>((n_dep > 0) ? n_dep : 1);
 
-	d_feasible[idx] =
-	    (excess_weight <= 0.0 && excess_volume <= 0.0 && incomp_violations == 0 && dep_violations == 0) ? 1U : 0U;
+	double p1 = fmin(1.0, excess_weight / max_excess_w);
+	double p2 = fmin(1.0, excess_volume / max_excess_v);
+	double p3 = fmin(1.0, static_cast<double>(cat_violations) / max_cat);
+	double p4 = (n_incomp == 0) ? 0.0 : fmin(1.0, static_cast<double>(incomp_violations) / max_incompat);
+	double p5 = (n_dep == 0) ? 0.0 : fmin(1.0, static_cast<double>(dep_violations) / max_dep);
+
+	double violacion_norm = penalties.w_weight * p1 + penalties.w_volume * p2 + penalties.w_category * p3 +
+	                        penalties.w_incompat * p4 + penalties.w_dep * p5;
+
+	d_fitness[idx] = penalties.alpha * valor_norm - penalties.beta * violacion_norm;
+
+	d_feasible[idx] = (total_weight <= max_weight + constants::FEASIBILITY_EPSILON &&
+	                   total_volume <= max_volume + constants::FEASIBILITY_EPSILON && incomp_violations == 0 &&
+	                   dep_violations == 0)
+	                      ? 1U
+	                      : 0U;
 }
 
 // ─── Helpers de host ─────────────────────────────────────────────────────────
@@ -221,6 +224,9 @@ static GpuInstance upload_instance(const ProblemInstance &inst, const PenaltyCon
 	gi.n_dep = n_dep;
 	gi.max_weight = inst.max_weight;
 	gi.max_volume = inst.max_volume;
+	gi.total_weight = inst.total_weight;
+	gi.total_volume = inst.total_volume;
+	gi.max_possible_value = inst.max_possible_value;
 
 	CUDA_CHECK(cudaMalloc(&gi.d_values, n * sizeof(double)));
 	CUDA_CHECK(cudaMalloc(&gi.d_weights, n * sizeof(double)));
@@ -342,8 +348,9 @@ GARunResult run_genetic_algorithm_cuda_basic(const ProblemInstance &instance, co
 	int *d_elite_indices = nullptr;
 	CUDA_CHECK(cudaMalloc(&d_elite_indices, config.elitism_count * sizeof(int)));
 
-	GpuPenalties penalties{config.penalties.alpha, config.penalties.beta, config.penalties.gamma,
-	                       config.penalties.delta, config.penalties.epsilon};
+	GpuPenalties penalties{config.penalties.alpha,     config.penalties.beta,       config.penalties.w_weight,
+	                       config.penalties.w_volume,  config.penalties.w_category, config.penalties.w_incompat,
+	                       config.penalties.w_dep};
 
 	// 1 hilo por individuo; hilos sobrantes descartados con el guard idx>=pop_size
 	const int grid_pop = (pop_size + block_size - 1) / block_size;
@@ -353,10 +360,22 @@ GARunResult run_genetic_algorithm_cuda_basic(const ProblemInstance &instance, co
 	CUDA_CHECK(cudaGetLastError());
 	CUDA_CHECK(cudaDeviceSynchronize());
 
-	// Generar población inicial aleatoria
-	kernel_init_population<<<grid_pop, block_size>>>(ctx.d_population, pop_size, n_items, ctx.d_rng_states);
-	CUDA_CHECK(cudaGetLastError());
-	CUDA_CHECK(cudaDeviceSynchronize());
+	// Generar población inicial factible en host (misma reparación que la variante secuencial)
+	// y transferirla al device. Garantiza que todos los individuos cumplan las
+	// restricciones duras desde el arranque.
+	{
+		std::mt19937 init_rng(static_cast<unsigned long long>(seed));
+		const size_t pop_bytes = static_cast<size_t>(pop_size) * static_cast<size_t>(n_items);
+		vector<uint8_t> h_population(pop_bytes);
+
+		for (int i = 0; i < pop_size; ++i) {
+			Chromosome chrom = make_feasible_random_chromosome(instance, init_rng);
+			std::copy(chrom.genes.begin(), chrom.genes.end(),
+			          h_population.begin() + static_cast<size_t>(i) * n_items);
+		}
+
+		CUDA_CHECK(cudaMemcpy(ctx.d_population, h_population.data(), pop_bytes, cudaMemcpyHostToDevice));
+	}
 
 	// Buffers host: solo fitness, nunca la población completa.
 	// (d_feasible ya no se transfiere completo: el kernel de reducción lo
@@ -387,7 +406,8 @@ GARunResult run_genetic_algorithm_cuda_basic(const ProblemInstance &instance, co
 		kernel_evaluate_fitness<<<grid_pop, block_size>>>(
 		    ctx.d_population, gi.d_values, gi.d_weights, gi.d_volumes, gi.d_item_cat, gi.d_cat_min, gi.d_cat_max,
 		    gi.n_cats, gi.d_incomp_a, gi.d_incomp_b, gi.n_incomp, gi.d_dep_item, gi.d_dep_req, gi.n_dep, gi.max_weight,
-		    gi.max_volume, penalties, ctx.d_fitness, ctx.d_feasible, pop_size, n_items);
+		    gi.max_volume, gi.total_weight, gi.total_volume, gi.max_possible_value, penalties, ctx.d_fitness,
+		    ctx.d_feasible, pop_size, n_items);
 		CUDA_CHECK(cudaGetLastError());
 		CUDA_CHECK(cudaDeviceSynchronize());
 

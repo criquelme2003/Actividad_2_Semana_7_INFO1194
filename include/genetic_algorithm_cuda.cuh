@@ -11,11 +11,13 @@
 // ─── Penalizaciones empaquetadas para pasar al kernel ────────────────────────
 // Se pasa como parámetro por valor
 struct GpuPenalties {
-	double alpha;
-	double beta;
-	double gamma;
-	double delta;
-	double epsilon;
+	double alpha;      // α: peso del valor normalizado      (α + β = 1)
+	double beta;       // β: peso de la violación normalizada
+	double w_weight;   // w1: exceso de peso                 (Σwi = 1)
+	double w_volume;   // w2: exceso de volumen
+	double w_category; // w3: violaciones de categoría
+	double w_incompat; // w4: incompatibilidades
+	double w_dep;      // w5: dependencias incumplidas
 };
 
 // ─── Instancia del problema en device ────────────────────────────────────────
@@ -45,6 +47,9 @@ struct GpuInstance {
 
 	double max_weight;
 	double max_volume;
+	double total_weight;       // suma de pesos de todos los items (denominador de normalizacion)
+	double total_volume;       // suma de volumenes de todos los items (denominador de normalizacion)
+	double max_possible_value; // suma de valores de todos los items (denominador de normalizacion)
 	int n_items;
 };
 
@@ -86,18 +91,15 @@ struct GACudaContext {
 // Un hilo por individuo; sequence = thread_id garantiza independencia estadística.
 __global__ void kernel_init_rng(curandState *d_rng_states, int pop_size, unsigned long long seed);
 
-// Genera la población inicial aleatoriamente (50 % de probabilidad por gen).
-// Debe llamarse después de kernel_init_rng.
-__global__ void kernel_init_population(uint8_t *d_population, int pop_size, int n_items, curandState *d_rng_states);
-
 // Evalúa el fitness de todos los individuos.
 // Estrategia: 1 hilo = 1 individuo.
 // Cada hilo itera sobre n_items genes y acumula:
 //   - valor/peso/volumen totales
-//   - excesos de capacidad → restricciones duras (alpha, beta)
-//   - violaciones de categoría → restricción blanda (gamma)
-//   - violaciones de incompatibilidad → restricción dura (delta)
-//   - violaciones de dependencia → restricción dura (epsilon)
+//   - excesos de capacidad → restricciones duras
+//   - violaciones de categoría → restricción blanda
+//   - violaciones de incompatibilidad → restricción dura
+//   - violaciones de dependencia → restricción dura
+// y calcula el fitness normalizado: fitness = alpha*valor_norm - beta*violacion_norm
 __global__ void kernel_evaluate_fitness(const uint8_t *__restrict__ d_population, const double *__restrict__ d_values,
                                         const double *__restrict__ d_weights, const double *__restrict__ d_volumes,
                                         const int *__restrict__ d_item_cat, const int *__restrict__ d_cat_min,
@@ -105,7 +107,8 @@ __global__ void kernel_evaluate_fitness(const uint8_t *__restrict__ d_population
                                         const int *__restrict__ d_incomp_a, const int *__restrict__ d_incomp_b,
                                         int n_incomp, const int *__restrict__ d_dep_item,
                                         const int *__restrict__ d_dep_req, int n_dep, double max_weight,
-                                        double max_volume, GpuPenalties penalties, double *d_fitness,
+                                        double max_volume, double total_weight, double total_volume,
+                                        double max_possible_value, GpuPenalties penalties, double *d_fitness,
                                         uint8_t *d_feasible, int pop_size, int n_items);
 
 // ─────────────────────────────────────────────────────────────────────────────
