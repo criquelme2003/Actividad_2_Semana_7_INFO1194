@@ -4,14 +4,12 @@
 #include "operators.hpp"
 #include "selection.hpp"
 #include <algorithm>
-#include <random>
 #include <stdexcept>
 
 using std::invalid_argument;
 using std::move;
 using std::size_t;
 using std::sort;
-using std::uniform_real_distribution;
 using std::vector;
 
 GeneticAlgorithm::GeneticAlgorithm(const ProblemInstance &instance, GAConfig config, const int seed)
@@ -43,16 +41,7 @@ GeneticAlgorithm::GeneticAlgorithm(const ProblemInstance &instance, GAConfig con
 }
 
 Chromosome GeneticAlgorithm::make_random_chromosome() {
-	Chromosome chromosome;
-
-	chromosome.genes.resize(instance_.items.size(), 0U);
-	std::bernoulli_distribution bit(0.5);
-
-	for (auto &gene : chromosome.genes) {
-		gene = bit(rng_) ? 1U : 0U;
-	}
-
-	return chromosome;
+	return make_feasible_random_chromosome(instance_, rng_);
 }
 
 vector<Chromosome> GeneticAlgorithm::make_initial_population() {

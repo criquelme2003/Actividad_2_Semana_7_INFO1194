@@ -52,6 +52,10 @@ validate_header_strict(const std::string &path,
 		return std::unexpected("CSV vacio o sin header: " + path);
 	}
 
+	if (!header_line.empty() && header_line.back() == '\r') {
+		header_line.pop_back();
+	}
+
 	auto actual_headers_result = split_header_line<N>(header_line);
 	if (!actual_headers_result) {
 		return std::unexpected(actual_headers_result.error());
