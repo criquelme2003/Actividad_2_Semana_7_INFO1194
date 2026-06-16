@@ -111,8 +111,9 @@ GARunResult GeneticAlgorithm::run() {
 			next_population.push_back(evaluated[static_cast<size_t>(elite)].chromosome);
 		}
 
+		const int R = std::max(10, static_cast<int>(population.size()) / 10);
 		const auto cum_probs =
-		    compute_rank_cumulative_probs(constants::RANK_SELECTION_COUNT, constants::RANK_SELECTION_P);
+		    compute_rank_cumulative_probs(R, constants::RANK_SELECTION_P);
 
 		while (next_population.size() < population.size()) {
 			const size_t rank_a = rank_select_index(cum_probs, rng_);

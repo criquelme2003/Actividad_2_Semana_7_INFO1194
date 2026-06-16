@@ -8,6 +8,15 @@
 #include <cuda_runtime.h>
 #include <curand_kernel.h>
 
+// ─── Par fitness+índice para búsqueda atómica del mejor ─────────────────────
+// Packeado en 64 bits para atomicCAS: idx (int, 4B) + fitness (float, 4B).
+// La precisión float es suficiente para comparar máximos (fitness en [0,1]).
+// Se alinea naturalmente a 8 bytes.
+struct BestPair {
+	int idx;
+	float fitness;
+};
+
 // ─── Penalizaciones empaquetadas para pasar al kernel ────────────────────────
 // Se pasa como parámetro por valor
 struct GpuPenalties {
@@ -67,8 +76,8 @@ struct GACudaContext {
 	double *d_fitness;         // [pop_size]
 	uint8_t *d_feasible;       // [pop_size] 1=factible respecto duras, 0=no
 	curandState *d_rng_states; // [pop_size] un estado cuRAND por individuo
-	int *d_selected_a;         // [pop_size] índices de padres A (torneo)
-	int *d_selected_b;         // [pop_size] índices de padres B (torneo)
+	int *d_selected_a;         // [pop_size] índices de padres A (rank selection)
+	int *d_selected_b;         // [pop_size] índices de padres B (rank selection)
 	
 	// Resultados parciales (1 valor por bloque) de la reducción
 	// "mejor individuo" / "mejor individuo factible".
@@ -116,11 +125,14 @@ __global__ void kernel_evaluate_fitness(const uint8_t *__restrict__ d_population
 // Declarados aquí para que el loop principal pueda invocarlos.
 // ─────────────────────────────────────────────────────────────────────────────
 
-// Selección por torneo: para cada posición en la nueva generación, elige
-// dos padres seleccionando el mejor de `tournament_size` candidatos aleatorios.
-// Escribe los índices ganadores en d_selected_a y d_selected_b.
-__global__ void kernel_tournament_selection(const double *__restrict__ d_fitness, int *d_selected_a, int *d_selected_b,
-                                            curandState *d_rng_states, int pop_size, int tournament_size);
+// Selección por ranking geométrico: para cada posición en la nueva generación,
+// elige dos padres según distribución de probabilidades geométrica sobre los
+// mejores R individuos (ordenados por fitness descendente).
+// d_sorted_indices[0..R-1] contiene los índices de los R mejores.
+// d_cum_probs contiene las probabilidades acumuladas normalizadas [0..R-1].
+__global__ void kernel_rank_selection(const int *__restrict__ d_sorted_indices, int *d_selected_a, int *d_selected_b,
+                                      curandState *d_rng_states, int pop_size, int rank_count,
+                                      const double *__restrict__ d_cum_probs);
 
 // Cruzamiento de un punto: genera d_new_population a partir de los pares
 // (d_selected_a[i], d_selected_b[i]) de d_population.
@@ -150,6 +162,13 @@ __global__ void kernel_update_population(uint8_t *__restrict__ d_population,
 __global__ void kernel_find_best_feasible(const double *__restrict__ d_fitness, const uint8_t *__restrict__ d_feasible,
                                           int pop_size, int *d_block_best_idx, double *d_block_best_fitness,
                                           int *d_block_best_feasible_idx, double *d_block_best_feasible_fitness);
+
+// Búsqueda paralela simple del mejor individuo (global y factible) usando
+// atomicCAS sobre BestPair (64 bits). Sin shared memory, sin reducción en árbol
+// — apropiado para V2. Cada hilo compite atómicamente por actualizar el mejor.
+__global__ void kernel_find_best_simple(const double *__restrict__ d_fitness, const uint8_t *__restrict__ d_feasible,
+                                        int pop_size, unsigned long long *d_best_global,
+                                        unsigned long long *d_best_feas);
 
 // FUNCIÓN DE ENTRADA — Variante 2: CUDA básico
 // Declarada aquí e implementada en src/genetic_algorithm_cuda.cu

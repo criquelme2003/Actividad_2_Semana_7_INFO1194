@@ -9,7 +9,10 @@
 #include "genetic_algorithm_cuda.cuh"
 #include "operators.hpp"
 
+#include <cub/cub.cuh>
+
 #include <algorithm>
+#include <cfloat>
 #include <numeric>
 #include <random>
 #include <stdexcept>
@@ -294,13 +297,8 @@ static GACudaContext alloc_cuda_context(int pop_size, int n_items, int block_siz
 	CUDA_CHECK(cudaMalloc(&ctx.d_selected_a, pop_size * sizeof(int)));
 	CUDA_CHECK(cudaMalloc(&ctx.d_selected_b, pop_size * sizeof(int)));
 
-	// Resultados parciales (1 valor por bloque) de la reducción "mejor individuo" /
-	// "mejor individuo factible".
-	ctx.grid_pop = (pop_size + block_size - 1) / block_size;
-	CUDA_CHECK(cudaMalloc(&ctx.d_block_best_idx, ctx.grid_pop * sizeof(int)));
-	CUDA_CHECK(cudaMalloc(&ctx.d_block_best_fitness, ctx.grid_pop * sizeof(double)));
-	CUDA_CHECK(cudaMalloc(&ctx.d_block_best_feasible_idx, ctx.grid_pop * sizeof(int)));
-	CUDA_CHECK(cudaMalloc(&ctx.d_block_best_feasible_fitness, ctx.grid_pop * sizeof(double)));
+	// grid_pop se calcula en run_genetic_algorithm_cuda_basic como variable local.
+	// ctx.grid_pop se deja sin inicializar (0); la reducción se hará en CPU para V2.
 
 	return ctx;
 }
@@ -313,23 +311,23 @@ static void free_cuda_context(GACudaContext &ctx) {
 	cudaFree(ctx.d_rng_states);
 	cudaFree(ctx.d_selected_a);
 	cudaFree(ctx.d_selected_b);
-	cudaFree(ctx.d_block_best_idx);
-	cudaFree(ctx.d_block_best_fitness);
-	cudaFree(ctx.d_block_best_feasible_idx);
-	cudaFree(ctx.d_block_best_feasible_fitness);
+	// ctx.d_block_best_* no se usan en V2 (mejor se busca en CPU para mantener V2 básica).
 	ctx = GACudaContext{};
 }
 
 // run_genetic_algorithm_cuda_basic — Loop principal, Variante 2.
 //
 // CPU/GPU:
-//   GPU → init_rng, init_population, evaluate_fitness, operadores (Cristóbal)
-//   CPU → tracking de estancamiento y mejor individuo (sobre h_fitness/h_feasible)
+//   GPU → init_rng, evaluate_fitness, find_best_simple, sort (cub),
+//         rank_selection, crossover, mutation, preserve_elites, update
+//   CPU → tracking de estancamiento y re-evaluación del mejor (FitnessBreakdown)
 //
 // Transferencias por generación:
-//   device→host: d_fitness + d_feasible (≤ pop_size × 9 bytes)
+//   device→host: d_fitness (pop_size × 8 bytes)
+//                best_global + best_feas (2 × BestPair = 16 bytes)
 //                cromosoma del mejor solo cuando mejora (n_items bytes)
 //   host→device: d_elite_indices (elitism_count × 4 bytes)
+//                inicialización de d_best_global/d_best_feas (2 × BestPair = 16 bytes)
 //   La población completa NUNCA se transfiere durante el loop.
 GARunResult run_genetic_algorithm_cuda_basic(const ProblemInstance &instance, const GAConfig &config, int seed,
                                              int block_size) {
@@ -340,6 +338,7 @@ GARunResult run_genetic_algorithm_cuda_basic(const ProblemInstance &instance, co
 
 	const int pop_size = config.population_size;
 	const int n_items = static_cast<int>(instance.items.size());
+	const int rank_count = std::max(10, pop_size / 10); // R dinámico: 10% de la población, mínimo 10
 
 	// Subir instancia al device (única vez)
 	GpuInstance gi = upload_instance(instance, config.penalties);
@@ -347,6 +346,55 @@ GARunResult run_genetic_algorithm_cuda_basic(const ProblemInstance &instance, co
 
 	int *d_elite_indices = nullptr;
 	CUDA_CHECK(cudaMalloc(&d_elite_indices, config.elitism_count * sizeof(int)));
+
+	// Buffers para rank selection (cub sort + kernel)
+	int *d_identity = nullptr;
+	int *d_sorted_indices = nullptr;
+	double *d_sorted_fitness = nullptr;
+	void *d_temp_storage = nullptr;
+	size_t temp_storage_bytes = 0;
+	double *d_cum_probs = nullptr;
+
+	// Buffers para búsqueda atómica del mejor (V2: paralelo, sin shared memory)
+	unsigned long long *d_best_global = nullptr;
+	unsigned long long *d_best_feas = nullptr;
+
+	CUDA_CHECK(cudaMalloc(&d_identity, pop_size * sizeof(int)));
+	CUDA_CHECK(cudaMalloc(&d_sorted_indices, pop_size * sizeof(int)));
+	CUDA_CHECK(cudaMalloc(&d_sorted_fitness, pop_size * sizeof(double)));
+	CUDA_CHECK(cudaMalloc(&d_best_global, sizeof(unsigned long long)));
+	CUDA_CHECK(cudaMalloc(&d_best_feas, sizeof(unsigned long long)));
+
+	// Precalcular probabilidades acumuladas para ranking geométrico (host→device, una vez)
+	// R = rank_count = max(10, pop_size/10): selección sobre el top R (justifica cub sort + kernel).
+	{
+		const int rc = rank_count;
+		const double p = constants::RANK_SELECTION_P;
+		vector<double> h_cum_probs(rc);
+		double sum = 0.0;
+		for (int i = 0; i < rc; ++i) {
+			sum += p * std::pow(1.0 - p, static_cast<double>(i));
+		}
+		double acc = 0.0;
+		for (int i = 0; i < rc; ++i) {
+			double raw = p * std::pow(1.0 - p, static_cast<double>(i));
+			h_cum_probs[i] = (acc + raw) / sum;
+			acc += raw;
+		}
+		CUDA_CHECK(cudaMalloc(&d_cum_probs, rc * sizeof(double)));
+		CUDA_CHECK(cudaMemcpy(d_cum_probs, h_cum_probs.data(), rc * sizeof(double), cudaMemcpyHostToDevice));
+	}
+
+	// Inicializar vector identidad [0..pop_size-1] y consultar tamaño de temp_storage para cub
+	{
+		vector<int> h_identity(pop_size);
+		std::iota(h_identity.begin(), h_identity.end(), 0);
+		CUDA_CHECK(cudaMemcpy(d_identity, h_identity.data(), pop_size * sizeof(int), cudaMemcpyHostToDevice));
+
+		CUDA_CHECK(cub::DeviceRadixSort::SortPairsDescending(
+		    nullptr, temp_storage_bytes, ctx.d_fitness, d_sorted_fitness, d_identity, d_sorted_indices, pop_size));
+		CUDA_CHECK(cudaMalloc(&d_temp_storage, temp_storage_bytes));
+	}
 
 	GpuPenalties penalties{config.penalties.alpha,     config.penalties.beta,       config.penalties.w_weight,
 	                       config.penalties.w_volume,  config.penalties.w_category, config.penalties.w_incompat,
@@ -377,18 +425,8 @@ GARunResult run_genetic_algorithm_cuda_basic(const ProblemInstance &instance, co
 		CUDA_CHECK(cudaMemcpy(ctx.d_population, h_population.data(), pop_bytes, cudaMemcpyHostToDevice));
 	}
 
-	// Buffers host: solo fitness, nunca la población completa.
-	// (d_feasible ya no se transfiere completo: el kernel de reducción lo
-	// resume en grid_pop valores).
+	// Buffers host: fitness para elitismo (partial_sort en CPU) y resultados de búsqueda
 	vector<double> h_fitness(pop_size);
-
-	// Resultados de la reducción "mejor individuo" / "mejor factible" (1 valor por bloque)
-	vector<int> h_block_best_idx(ctx.grid_pop);
-	vector<double> h_block_best_fitness(ctx.grid_pop);
-	vector<int> h_block_best_feasible_idx(ctx.grid_pop);
-	vector<double> h_block_best_feasible_fitness(ctx.grid_pop);
-
-	const size_t reduction_shared_bytes = static_cast<size_t>(block_size) * (2 * sizeof(double) + 2 * sizeof(int));
 
 	// Evaluador CPU para recalcular FitnessBreakdown completo del mejor individuo
 	FitnessEvaluator cpu_evaluator(instance, config.penalties);
@@ -411,43 +449,31 @@ GARunResult run_genetic_algorithm_cuda_basic(const ProblemInstance &instance, co
 		CUDA_CHECK(cudaGetLastError());
 		CUDA_CHECK(cudaDeviceSynchronize());
 
-		// Transferir fitness completo al host (lo necesita partial_sort para elitismo)
+		// Transferir fitness al host (necesario para partial_sort del elitismo)
 		CUDA_CHECK(cudaMemcpy(h_fitness.data(), ctx.d_fitness, pop_size * sizeof(double), cudaMemcpyDeviceToHost));
 
-		// Reducción en GPU: mejor individuo (global) y mejor individuo factible,
-		// resumidos en grid_pop valores parciales (1 por bloque).
-		kernel_find_best_feasible<<<grid_pop, block_size, reduction_shared_bytes>>>(
-		    ctx.d_fitness, ctx.d_feasible, pop_size, ctx.d_block_best_idx, ctx.d_block_best_fitness,
-		    ctx.d_block_best_feasible_idx, ctx.d_block_best_feasible_fitness);
-		CUDA_CHECK(cudaGetLastError());
-		CUDA_CHECK(cudaDeviceSynchronize());
+		// Búsqueda paralela del mejor (global y factible) — kernel sin shared memory
+		{
+			BestPair init = {-1, -FLT_MAX};
+			CUDA_CHECK(cudaMemcpy(d_best_global, &init, sizeof(BestPair), cudaMemcpyHostToDevice));
+			CUDA_CHECK(cudaMemcpy(d_best_feas, &init, sizeof(BestPair), cudaMemcpyHostToDevice));
 
-		CUDA_CHECK(cudaMemcpy(h_block_best_idx.data(), ctx.d_block_best_idx, ctx.grid_pop * sizeof(int),
-		                      cudaMemcpyDeviceToHost));
-		CUDA_CHECK(cudaMemcpy(h_block_best_fitness.data(), ctx.d_block_best_fitness, ctx.grid_pop * sizeof(double),
-		                      cudaMemcpyDeviceToHost));
-		CUDA_CHECK(cudaMemcpy(h_block_best_feasible_idx.data(), ctx.d_block_best_feasible_idx,
-		                      ctx.grid_pop * sizeof(int), cudaMemcpyDeviceToHost));
-		CUDA_CHECK(cudaMemcpy(h_block_best_feasible_fitness.data(), ctx.d_block_best_feasible_fitness,
-		                      ctx.grid_pop * sizeof(double), cudaMemcpyDeviceToHost));
-
-		// Reducción final (sobre grid_pop elementos) en CPU
-		int best_idx = h_block_best_idx[0];
-		double gen_best_fit = h_block_best_fitness[0];
-		int best_feasible_idx = h_block_best_feasible_idx[0];
-		double gen_best_feasible_fit = h_block_best_feasible_fitness[0];
-
-		for (int b = 1; b < ctx.grid_pop; ++b) {
-			if (h_block_best_fitness[b] > gen_best_fit) {
-				gen_best_fit = h_block_best_fitness[b];
-				best_idx = h_block_best_idx[b];
-			}
-			if (h_block_best_feasible_idx[b] >= 0 &&
-			    (best_feasible_idx < 0 || h_block_best_feasible_fitness[b] > gen_best_feasible_fit)) {
-				gen_best_feasible_fit = h_block_best_feasible_fitness[b];
-				best_feasible_idx = h_block_best_feasible_idx[b];
-			}
+			kernel_find_best_simple<<<grid_pop, block_size>>>(ctx.d_fitness, ctx.d_feasible, pop_size,
+			                                                  d_best_global, d_best_feas);
+			CUDA_CHECK(cudaGetLastError());
+			CUDA_CHECK(cudaDeviceSynchronize());
 		}
+
+		// Traer resultados al host (2 × 8 bytes = 16 bytes por generación)
+		BestPair best_global;
+		BestPair best_feas;
+		CUDA_CHECK(cudaMemcpy(&best_global, d_best_global, sizeof(BestPair), cudaMemcpyDeviceToHost));
+		CUDA_CHECK(cudaMemcpy(&best_feas, d_best_feas, sizeof(BestPair), cudaMemcpyDeviceToHost));
+
+		const int best_idx = best_global.idx;
+		const double gen_best_fit = h_fitness[best_idx];
+		const int best_feasible_idx = best_feas.idx;
+		const double gen_best_feasible_fit = (best_feasible_idx >= 0) ? h_fitness[best_feasible_idx] : -1e18;
 
 		// Tracking del mejor (estancamiento)
 		if (gen == 0 || gen_best_fit > best_fitness_ever) {
@@ -499,10 +525,18 @@ GARunResult run_genetic_algorithm_cuda_basic(const ProblemInstance &instance, co
 
 		// Operadores genéticos
 
-		// Selección por torneo
-		kernel_tournament_selection<<<grid_pop, block_size>>>(
-		    ctx.d_fitness, ctx.d_selected_a, ctx.d_selected_b, ctx.d_rng_states, pop_size,
-		    3 /* tournament_size: constante para Variante 2 básica */);
+		// Ordenar fitness descendente con cub (ranking para selección geométrica)
+		CUDA_CHECK(cub::DeviceRadixSort::SortPairsDescending(
+		    d_temp_storage, temp_storage_bytes,
+		    ctx.d_fitness, d_sorted_fitness,
+		    d_identity, d_sorted_indices,
+		    pop_size));
+		CUDA_CHECK(cudaGetLastError());
+
+		// Selección por ranking geométrico (misma semántica que Variante 1)
+		kernel_rank_selection<<<grid_pop, block_size>>>(
+		    d_sorted_indices, ctx.d_selected_a, ctx.d_selected_b, ctx.d_rng_states,
+		    pop_size, rank_count, d_cum_probs);
 		CUDA_CHECK(cudaGetLastError());
 		CUDA_CHECK(cudaDeviceSynchronize());
 
@@ -537,6 +571,13 @@ GARunResult run_genetic_algorithm_cuda_basic(const ProblemInstance &instance, co
 
 	// Liberar memoria de device
 	cudaFree(d_elite_indices);
+	cudaFree(d_identity);
+	cudaFree(d_sorted_indices);
+	cudaFree(d_sorted_fitness);
+	cudaFree(d_temp_storage);
+	cudaFree(d_cum_probs);
+	cudaFree(d_best_global);
+	cudaFree(d_best_feas);
 	free_cuda_context(ctx);
 	free_gpu_instance(gi);
 

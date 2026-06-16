@@ -3,7 +3,7 @@
 // Variante 2 — Operadores genéticos en GPU
 //
 // Implementación de los kernels de operadores genéticos:
-//   - kernel_tournament_selection   Selección por torneo
+//   - kernel_rank_selection         Selección por ranking geométrico
 //   - kernel_crossover              Cruzamiento de un punto
 //   - kernel_mutation                Mutación bit-flip
 //   - kernel_preserve_elites        Preservación de élites
@@ -17,19 +17,27 @@
 #include <curand_kernel.h>
 
 // ─────────────────────────────────────────────────────────────────────────────
-// kernel_tournament_selection
+// kernel_rank_selection
 //
 // Para cada posición i en la nueva generación, selecciona dos padres mediante
-// torneo: de tournament_size candidatos aleatorios, gana el de mayor fitness.
-// Los torneos para el padre A y el padre B son independientes entre sí, por lo
-// que ambos padres pueden coincidir (igual que en la versión secuencial).
+// ranking geométrico: elige un rank aleatorio (0..rank_count-1) de acuerdo a
+// la distribución de probabilidades acumuladas d_cum_probs, y luego obtiene el
+// índice del individuo correspondiente desde d_sorted_indices[rank].
+//
+// Los rankings de ambos padres se generan con el mismo generador pseudoaleatorio
+// (secuencial, no paralelo) y se asegura que sean distintos: si rank_b == rank_a,
+// se sigue sorteando hasta obtener uno diferente (misma semántica que V1).
+//
+// d_sorted_indices debe haber sido generado por cub::DeviceRadixSort::SortPairsDescending
+// sobre los fitness en la generación actual.
 //
 // Salida:
 //   d_selected_a[i] → índice del padre A para la posición i
 //   d_selected_b[i] → índice del padre B para la posición i
 // ─────────────────────────────────────────────────────────────────────────────
-__global__ void kernel_tournament_selection(const double *__restrict__ d_fitness, int *d_selected_a, int *d_selected_b,
-                                            curandState *d_rng_states, int pop_size, int tournament_size) {
+__global__ void kernel_rank_selection(const int *__restrict__ d_sorted_indices, int *d_selected_a, int *d_selected_b,
+                                      curandState *d_rng_states, int pop_size, int rank_count,
+                                      const double *__restrict__ d_cum_probs) {
 
 	int idx = blockIdx.x * blockDim.x + threadIdx.x;
 	if (idx >= pop_size)
@@ -37,32 +45,33 @@ __global__ void kernel_tournament_selection(const double *__restrict__ d_fitness
 
 	curandState local_state = d_rng_states[idx];
 
-	// Torneo para el padre A
-	int best_a = curand(&local_state) % pop_size;
-	double best_a_fit = d_fitness[best_a];
-	for (int t = 1; t < tournament_size; ++t) {
-		int candidate = curand(&local_state) % pop_size;
-		double cand_fit = d_fitness[candidate];
-		if (cand_fit > best_a_fit) {
-			best_a_fit = cand_fit;
-			best_a = candidate;
+	// --- Selección del padre A (rank aleatorio según prob. acumulada) ---
+	double u_a = curand_uniform_double(&local_state);
+	int rank_a = 0;
+	for (int r = 0; r < rank_count; ++r) {
+		if (u_a < d_cum_probs[r]) {
+			rank_a = r;
+			break;
 		}
+		rank_a = r;
 	}
 
-	// Torneo para el padre B (independiente del de A)
-	int best_b = curand(&local_state) % pop_size;
-	double best_b_fit = d_fitness[best_b];
-	for (int t = 1; t < tournament_size; ++t) {
-		int candidate = curand(&local_state) % pop_size;
-		double cand_fit = d_fitness[candidate];
-		if (cand_fit > best_b_fit) {
-			best_b_fit = cand_fit;
-			best_b = candidate;
+	// --- Selección del padre B (distinto de A) ---
+	int rank_b;
+	do {
+		double u_b = curand_uniform_double(&local_state);
+		rank_b = 0;
+		for (int r = 0; r < rank_count; ++r) {
+			if (u_b < d_cum_probs[r]) {
+				rank_b = r;
+				break;
+			}
+			rank_b = r;
 		}
-	}
+	} while (rank_b == rank_a);
 
-	d_selected_a[idx] = best_a;
-	d_selected_b[idx] = best_b;
+	d_selected_a[idx] = d_sorted_indices[rank_a];
+	d_selected_b[idx] = d_sorted_indices[rank_b];
 
 	d_rng_states[idx] = local_state;
 }
@@ -182,6 +191,63 @@ __global__ void kernel_update_population(uint8_t *__restrict__ d_population,
 	const uint8_t *src = d_new_population + static_cast<size_t>(idx) * n_items;
 	for (int i = 0; i < n_items; ++i) {
 		dst[i] = src[i];
+	}
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// kernel_find_best_simple
+//
+// Búsqueda paralela del mejor individuo (global y factible) mediante atomicCAS
+// sobre BestPair (64 bits: índice + fitness en float). Sin shared memory, sin
+// reducción en árbol — cada hilo compite atómicamente por ser el mejor.
+//
+// Adecuado para V2 (CUDA básico). V3 usará kernel_find_best_feasible con
+// reducción paralela en shared memory.
+//
+// d_best_global y d_best_feas deben inicializarse con BestPair{-1, -FLT_MAX}
+// ANTES de lanzar este kernel (se hace en el host con cudaMemcpy cada gen.).
+// ─────────────────────────────────────────────────────────────────────────────
+__global__ void kernel_find_best_simple(const double *__restrict__ d_fitness, const uint8_t *__restrict__ d_feasible,
+                                        int pop_size, unsigned long long *d_best_global,
+                                        unsigned long long *d_best_feas) {
+
+	int idx = blockIdx.x * blockDim.x + threadIdx.x;
+	if (idx >= pop_size)
+		return;
+
+	float f = static_cast<float>(d_fitness[idx]);
+
+	BestPair local;
+	local.idx = idx;
+	local.fitness = f;
+	unsigned long long local_val = *reinterpret_cast<unsigned long long *>(&local);
+
+	// Competir atómicamente por el mejor global
+	unsigned long long old_val = *d_best_global;
+	BestPair old = *reinterpret_cast<BestPair *>(&old_val);
+
+	while (f > old.fitness || (f == old.fitness && idx < old.idx)) {
+		unsigned long long expected = old_val;
+		unsigned long long prev = atomicCAS(d_best_global, expected, local_val);
+		if (prev == expected)
+			break;
+		old_val = prev;
+		old = *reinterpret_cast<BestPair *>(&old_val);
+	}
+
+	// Competir atómicamente por el mejor factible
+	if (d_feasible[idx]) {
+		old_val = *d_best_feas;
+		old = *reinterpret_cast<BestPair *>(&old_val);
+
+		while (f > old.fitness || (f == old.fitness && idx < old.idx)) {
+			unsigned long long expected = old_val;
+			unsigned long long prev = atomicCAS(d_best_feas, expected, local_val);
+			if (prev == expected)
+				break;
+			old_val = prev;
+			old = *reinterpret_cast<BestPair *>(&old_val);
+		}
 	}
 }
 

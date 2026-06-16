@@ -5,8 +5,9 @@ namespace constants {
 inline constexpr int DEFAULT_GENERATIONS = 200;
 inline constexpr int DEFAULT_POPULATION_SIZE = 1024;
 inline constexpr int DEFAULT_ELITISM_COUNT = 2;
-inline constexpr int RANK_SELECTION_COUNT = 10;
 inline constexpr double RANK_SELECTION_P = 0.5;
+// RANK_SELECTION_COUNT ahora es dinámico: se usa el tamaño de la población
+// para que la selección por ranking geométrico considere todos los individuos.
 inline constexpr int DEFAULT_SEED = 123;
 inline constexpr int MAX_STAGNATION_GENERATIONS = 50;
 
