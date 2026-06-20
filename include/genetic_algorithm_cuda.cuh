@@ -93,6 +93,23 @@ struct GACudaContext {
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
+// HELPERS DE HOST COMPARTIDOS ENTRE V2 Y V3
+// Declarados aquí para ser accesibles desde genetic_algorithm_cuda_opt.cu.
+// ─────────────────────────────────────────────────────────────────────────────
+
+// Aplana la instancia y la transfiere al device (única vez antes del loop).
+GpuInstance upload_instance(const ProblemInstance &inst, const PenaltyConfig &pen);
+
+// Libera la memoria de device asociada a un GpuInstance.
+void free_gpu_instance(GpuInstance &gi);
+
+// Reserva todos los buffers del GA en device (sin d_block_best_*, que V3 gestiona aparte).
+GACudaContext alloc_cuda_context(int pop_size, int n_items, int block_size);
+
+// Libera los buffers del contexto (excepto d_block_best_*, que V3 libera antes de llamar aquí).
+void free_cuda_context(GACudaContext &ctx);
+
+// ─────────────────────────────────────────────────────────────────────────────
 // KERNELS DE INFRAESTRUCTURA BASE
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -174,3 +191,14 @@ __global__ void kernel_find_best_simple(const double *__restrict__ d_fitness, co
 // Declarada aquí e implementada en src/genetic_algorithm_cuda.cu
 GARunResult run_genetic_algorithm_cuda_basic(const ProblemInstance &instance, const GAConfig &config, int seed,
                                              int block_size);
+
+// FUNCIÓN DE ENTRADA — Variante 3: CUDA optimizado
+// Implementada en src/genetic_algorithm_cuda_opt.cu.
+// Optimizaciones respecto a V2:
+//   1. Memoria constante para escalares (penalizaciones, límites, n_items, etc.)
+//   2. Conteo de categorías en un solo pase O(n_items) (vs O(n_cats × n_items) en V2)
+//   3. Reducción con shared memory para búsqueda del mejor (kernel_find_best_feasible)
+//   4. Elitismo GPU-side: usa d_sorted_indices de CUB sort → elimina transfer pop_size × 8B
+//   5. Reducción de divergencia de warps en cruzamiento y mutación
+GARunResult run_genetic_algorithm_cuda_optimized(const ProblemInstance &instance, const GAConfig &config, int seed,
+                                                 int block_size);

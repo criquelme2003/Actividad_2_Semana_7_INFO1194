@@ -26,6 +26,20 @@ CliArguments::CliArguments(int argc, char *argv[]) {
 	    .default_value(constants::DEFAULT_SEED)
 	    .scan<'i', int>();
 
+	program.add_argument("--pop-size")
+	    .help("Tamaño de la población")
+	    .default_value(constants::DEFAULT_POPULATION_SIZE)
+	    .scan<'i', int>();
+
+	program.add_argument("--generations")
+	    .help("Número máximo de generaciones")
+	    .default_value(constants::DEFAULT_GENERATIONS)
+	    .scan<'i', int>();
+
+	program.add_argument("--bench-out")
+	    .help("Archivo CSV donde se añade una fila con los resultados experimentales")
+	    .default_value(string(""));
+
 	program.add_argument("-v", "--verbose").help("Modo verbose").default_value(false).implicit_value(true);
 
 	try {
@@ -35,12 +49,15 @@ CliArguments::CliArguments(int argc, char *argv[]) {
 		std::exit(1);
 	}
 
-	input_file = program.get<string>("--instance");
-	variant = program.get<string>("--variant");
-	seed = program.get<int>("--seed");
-	num_threads = program.get<int>("--threads");
-	block_size = program.get<int>("--block-size");
-	verbose = program.get<bool>("--verbose");
+	input_file      = program.get<string>("--instance");
+	variant         = program.get<string>("--variant");
+	seed            = program.get<int>("--seed");
+	num_threads     = program.get<int>("--threads");
+	block_size      = program.get<int>("--block-size");
+	population_size = program.get<int>("--pop-size");
+	generations     = program.get<int>("--generations");
+	bench_out       = program.get<string>("--bench-out");
+	verbose         = program.get<bool>("--verbose");
 }
 
 void CliArguments::display() {

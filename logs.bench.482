@@ -1,0 +1,1183 @@
+[ 20%] Built target fmt
+[100%] Built target mochila_ga_cuda
+Hardware:
+NVIDIA GeForce RTX 4090, 24564 MiB, 535.309.01
+=== EXPERIMENTO PRINCIPAL: cuda_optimized ===
+Total: 90 ejecuciones
+[1/90] instance_small | pop=1024 | seed=42
+Generaciones ejecutadas: 87
+Tiempo total: 89.75 ms
+Mejor fitness: 0.398401
+Mejor valor total: 3668.920
+Factible (restricciones duras): no
+Penalizacion total: 0.054826
+Mejor fitness factible: 0.296964
+Mejor valor factible: 2412.050
+[2/90] instance_small | pop=1024 | seed=43
+Generaciones ejecutadas: 86
+Tiempo total: 68.70 ms
+Mejor fitness: 0.398401
+Mejor valor total: 3668.920
+Factible (restricciones duras): no
+Penalizacion total: 0.054826
+Mejor fitness factible: 0.291563
+Mejor valor factible: 2366.710
+[3/90] instance_small | pop=1024 | seed=44
+Generaciones ejecutadas: 87
+Tiempo total: 71.19 ms
+Mejor fitness: 0.398030
+Mejor valor total: 3766.280
+Factible (restricciones duras): no
+Penalizacion total: 0.067224
+Mejor fitness factible: 0.293313
+Mejor valor factible: 2384.110
+[4/90] instance_small | pop=1024 | seed=45
+Generaciones ejecutadas: 87
+Tiempo total: 76.37 ms
+Mejor fitness: 0.398401
+Mejor valor total: 3668.920
+Factible (restricciones duras): no
+Penalizacion total: 0.054826
+Mejor fitness factible: 0.284774
+Mejor valor factible: 2314.990
+[5/90] instance_small | pop=1024 | seed=46
+Generaciones ejecutadas: 89
+Tiempo total: 68.14 ms
+Mejor fitness: 0.398030
+Mejor valor total: 3766.280
+Factible (restricciones duras): no
+Penalizacion total: 0.067224
+Mejor fitness factible: 0.312457
+Mejor valor factible: 2542.320
+[6/90] instance_small | pop=1024 | seed=47
+Generaciones ejecutadas: 94
+Tiempo total: 77.92 ms
+Mejor fitness: 0.398401
+Mejor valor total: 3668.920
+Factible (restricciones duras): no
+Penalizacion total: 0.054826
+Mejor fitness factible: 0.301065
+Mejor valor factible: 2445.250
+[7/90] instance_small | pop=1024 | seed=48
+Generaciones ejecutadas: 89
+Tiempo total: 64.27 ms
+Mejor fitness: 0.398401
+Mejor valor total: 3668.920
+Factible (restricciones duras): no
+Penalizacion total: 0.054826
+Mejor fitness factible: 0.309345
+Mejor valor factible: 2515.510
+[8/90] instance_small | pop=1024 | seed=49
+Generaciones ejecutadas: 97
+Tiempo total: 70.58 ms
+Mejor fitness: 0.398401
+Mejor valor total: 3668.920
+Factible (restricciones duras): no
+Penalizacion total: 0.054826
+Mejor fitness factible: 0.302163
+Mejor valor factible: 2457.370
+[9/90] instance_small | pop=1024 | seed=50
+Generaciones ejecutadas: 83
+Tiempo total: 76.21 ms
+Mejor fitness: 0.398401
+Mejor valor total: 3668.920
+Factible (restricciones duras): no
+Penalizacion total: 0.054826
+Mejor fitness factible: 0.288661
+Mejor valor factible: 2346.450
+[10/90] instance_small | pop=1024 | seed=51
+Generaciones ejecutadas: 87
+Tiempo total: 67.22 ms
+Mejor fitness: 0.398030
+Mejor valor total: 3766.280
+Factible (restricciones duras): no
+Penalizacion total: 0.067224
+Mejor fitness factible: 0.295544
+Mejor valor factible: 2400.550
+[11/90] instance_small | pop=4096 | seed=42
+Generaciones ejecutadas: 73
+Tiempo total: 112.99 ms
+Mejor fitness: 0.398401
+Mejor valor total: 3668.920
+Factible (restricciones duras): no
+Penalizacion total: 0.054826
+Mejor fitness factible: 0.294552
+Mejor valor factible: 2394.140
+[12/90] instance_small | pop=4096 | seed=43
+Generaciones ejecutadas: 74
+Tiempo total: 107.68 ms
+Mejor fitness: 0.398401
+Mejor valor total: 3668.920
+Factible (restricciones duras): no
+Penalizacion total: 0.054826
+Mejor fitness factible: 0.303776
+Mejor valor factible: 2467.190
+[13/90] instance_small | pop=4096 | seed=44
+Generaciones ejecutadas: 78
+Tiempo total: 115.58 ms
+Mejor fitness: 0.398030
+Mejor valor total: 3766.280
+Factible (restricciones duras): no
+Penalizacion total: 0.067224
+Mejor fitness factible: 0.289610
+Mejor valor factible: 2352.520
+[14/90] instance_small | pop=4096 | seed=45
+Generaciones ejecutadas: 72
+Tiempo total: 105.46 ms
+Mejor fitness: 0.398401
+Mejor valor total: 3668.920
+Factible (restricciones duras): no
+Penalizacion total: 0.054826
+Mejor fitness factible: 0.293072
+Mejor valor factible: 2383.780
+[15/90] instance_small | pop=4096 | seed=46
+Generaciones ejecutadas: 75
+Tiempo total: 103.01 ms
+Mejor fitness: 0.398030
+Mejor valor total: 3766.280
+Factible (restricciones duras): no
+Penalizacion total: 0.067224
+Mejor fitness factible: 0.301003
+Mejor valor factible: 2446.360
+[16/90] instance_small | pop=4096 | seed=47
+Generaciones ejecutadas: 74
+Tiempo total: 104.47 ms
+Mejor fitness: 0.398401
+Mejor valor total: 3668.920
+Factible (restricciones duras): no
+Penalizacion total: 0.054826
+Mejor fitness factible: 0.295811
+Mejor valor factible: 2404.330
+[17/90] instance_small | pop=4096 | seed=48
+Generaciones ejecutadas: 73
+Tiempo total: 106.14 ms
+Mejor fitness: 0.398030
+Mejor valor total: 3766.280
+Factible (restricciones duras): no
+Penalizacion total: 0.067224
+Mejor fitness factible: 0.284785
+Mejor valor factible: 2316.700
+[18/90] instance_small | pop=4096 | seed=49
+Generaciones ejecutadas: 74
+Tiempo total: 115.34 ms
+Mejor fitness: 0.398401
+Mejor valor total: 3668.920
+Factible (restricciones duras): no
+Penalizacion total: 0.054826
+Mejor fitness factible: 0.302163
+Mejor valor factible: 2457.370
+[19/90] instance_small | pop=4096 | seed=50
+Generaciones ejecutadas: 77
+Tiempo total: 107.30 ms
+Mejor fitness: 0.398030
+Mejor valor total: 3766.280
+Factible (restricciones duras): no
+Penalizacion total: 0.067224
+Mejor fitness factible: 0.308265
+Mejor valor factible: 2505.150
+[20/90] instance_small | pop=4096 | seed=51
+Generaciones ejecutadas: 74
+Tiempo total: 110.39 ms
+Mejor fitness: 0.398401
+Mejor valor total: 3668.920
+Factible (restricciones duras): no
+Penalizacion total: 0.054826
+Mejor fitness factible: 0.304900
+Mejor valor factible: 2476.290
+[21/90] instance_small | pop=16384 | seed=42
+Generaciones ejecutadas: 72
+Tiempo total: 261.93 ms
+Mejor fitness: 0.398401
+Mejor valor total: 3668.920
+Factible (restricciones duras): no
+Penalizacion total: 0.054826
+Mejor fitness factible: 0.299109
+Mejor valor factible: 2429.410
+[22/90] instance_small | pop=16384 | seed=43
+Generaciones ejecutadas: 70
+Tiempo total: 256.94 ms
+Mejor fitness: 0.398030
+Mejor valor total: 3766.280
+Factible (restricciones duras): no
+Penalizacion total: 0.067224
+Mejor fitness factible: 0.299244
+Mejor valor factible: 2428.890
+[23/90] instance_small | pop=16384 | seed=44
+Generaciones ejecutadas: 69
+Tiempo total: 247.12 ms
+Mejor fitness: 0.398401
+Mejor valor total: 3668.920
+Factible (restricciones duras): no
+Penalizacion total: 0.054826
+Mejor fitness factible: 0.300813
+Mejor valor factible: 2443.210
+[24/90] instance_small | pop=16384 | seed=45
+Generaciones ejecutadas: 71
+Tiempo total: 252.68 ms
+Mejor fitness: 0.398401
+Mejor valor total: 3668.920
+Factible (restricciones duras): no
+Penalizacion total: 0.054826
+Mejor fitness factible: 0.298438
+Mejor valor factible: 2425.600
+[25/90] instance_small | pop=16384 | seed=46
+Generaciones ejecutadas: 73
+Tiempo total: 248.04 ms
+Mejor fitness: 0.398030
+Mejor valor total: 3766.280
+Factible (restricciones duras): no
+Penalizacion total: 0.067224
+Mejor fitness factible: 0.297530
+Mejor valor factible: 2423.110
+[26/90] instance_small | pop=16384 | seed=47
+Generaciones ejecutadas: 71
+Tiempo total: 249.80 ms
+Mejor fitness: 0.398401
+Mejor valor total: 3668.920
+Factible (restricciones duras): no
+Penalizacion total: 0.054826
+Mejor fitness factible: 0.302686
+Mejor valor factible: 2458.370
+[27/90] instance_small | pop=16384 | seed=48
+Generaciones ejecutadas: 73
+Tiempo total: 254.38 ms
+Mejor fitness: 0.398401
+Mejor valor total: 3668.920
+Factible (restricciones duras): no
+Penalizacion total: 0.054826
+Mejor fitness factible: 0.300165
+Mejor valor factible: 2441.200
+[28/90] instance_small | pop=16384 | seed=49
+Generaciones ejecutadas: 72
+Tiempo total: 263.53 ms
+Mejor fitness: 0.398401
+Mejor valor total: 3668.920
+Factible (restricciones duras): no
+Penalizacion total: 0.054826
+Mejor fitness factible: 0.305792
+Mejor valor factible: 2485.130
+[29/90] instance_small | pop=16384 | seed=50
+Generaciones ejecutadas: 77
+Tiempo total: 255.57 ms
+Mejor fitness: 0.398030
+Mejor valor total: 3766.280
+Factible (restricciones duras): no
+Penalizacion total: 0.067224
+Mejor fitness factible: 0.301596
+Mejor valor factible: 2452.780
+[30/90] instance_small | pop=16384 | seed=51
+Generaciones ejecutadas: 67
+Tiempo total: 247.95 ms
+Mejor fitness: 0.398401
+Mejor valor total: 3668.920
+Factible (restricciones duras): no
+Penalizacion total: 0.054826
+Mejor fitness factible: 0.321921
+Mejor valor factible: 2627.030
+[31/90] instance_medium | pop=1024 | seed=42
+Generaciones ejecutadas: 200
+Tiempo total: 341.02 ms
+Mejor fitness: 0.366274
+Mejor valor total: 35819.110
+Factible (restricciones duras): no
+Penalizacion total: 0.050262
+Mejor fitness factible: 0.257110
+Mejor valor factible: 22147.420
+[32/90] instance_medium | pop=1024 | seed=43
+Generaciones ejecutadas: 200
+Tiempo total: 333.01 ms
+Mejor fitness: 0.363109
+Mejor valor total: 35918.010
+Factible (restricciones duras): no
+Penalizacion total: 0.054577
+Mejor fitness factible: 0.256130
+Mejor valor factible: 22054.550
+[33/90] instance_medium | pop=1024 | seed=44
+Generaciones ejecutadas: 200
+Tiempo total: 328.75 ms
+Mejor fitness: 0.366781
+Mejor valor total: 37091.300
+Factible (restricciones duras): no
+Penalizacion total: 0.064549
+Mejor fitness factible: 0.255081
+Mejor valor factible: 21957.510
+[34/90] instance_medium | pop=1024 | seed=45
+Generaciones ejecutadas: 200
+Tiempo total: 328.02 ms
+Mejor fitness: 0.362785
+Mejor valor total: 34726.700
+Factible (restricciones duras): no
+Penalizacion total: 0.041048
+Mejor fitness factible: 0.257753
+Mejor valor factible: 22194.120
+[35/90] instance_medium | pop=1024 | seed=46
+Generaciones ejecutadas: 200
+Tiempo total: 332.53 ms
+Mejor fitness: 0.368051
+Mejor valor total: 36219.120
+Factible (restricciones duras): no
+Penalizacion total: 0.053137
+Mejor fitness factible: 0.255194
+Mejor valor factible: 21962.080
+[36/90] instance_medium | pop=1024 | seed=47
+Generaciones ejecutadas: 200
+Tiempo total: 329.21 ms
+Mejor fitness: 0.367217
+Mejor valor total: 35766.180
+Factible (restricciones duras): no
+Penalizacion total: 0.048703
+Mejor fitness factible: 0.256832
+Mejor valor factible: 22109.800
+[37/90] instance_medium | pop=1024 | seed=48
+Generaciones ejecutadas: 200
+Tiempo total: 328.71 ms
+Mejor fitness: 0.361362
+Mejor valor total: 35083.970
+Factible (restricciones duras): no
+Penalizacion total: 0.046625
+Mejor fitness factible: 0.258072
+Mejor valor factible: 22223.340
+[38/90] instance_medium | pop=1024 | seed=49
+Generaciones ejecutadas: 200
+Tiempo total: 329.46 ms
+Mejor fitness: 0.365651
+Mejor valor total: 35316.040
+Factible (restricciones duras): no
+Penalizacion total: 0.045035
+Mejor fitness factible: 0.254850
+Mejor valor factible: 21944.550
+[39/90] instance_medium | pop=1024 | seed=50
+Generaciones ejecutadas: 200
+Tiempo total: 328.44 ms
+Mejor fitness: 0.364946
+Mejor valor total: 35538.420
+Factible (restricciones duras): no
+Penalizacion total: 0.048326
+Mejor fitness factible: 0.257010
+Mejor valor factible: 22114.820
+[40/90] instance_medium | pop=1024 | seed=51
+Generaciones ejecutadas: 200
+Tiempo total: 327.96 ms
+Mejor fitness: 0.367801
+Mejor valor total: 35397.590
+Factible (restricciones duras): no
+Penalizacion total: 0.043833
+Mejor fitness factible: 0.263444
+Mejor valor factible: 22700.720
+[41/90] instance_medium | pop=4096 | seed=42
+Generaciones ejecutadas: 200
+Tiempo total: 812.66 ms
+Mejor fitness: 0.386775
+Mejor valor total: 38221.590
+Factible (restricciones duras): no
+Penalizacion total: 0.057699
+Mejor fitness factible: 0.258238
+Mejor valor factible: 22249.640
+[42/90] instance_medium | pop=4096 | seed=43
+Generaciones ejecutadas: 200
+Tiempo total: 804.05 ms
+Mejor fitness: 0.386123
+Mejor valor total: 38691.450
+Factible (restricciones duras): no
+Penalizacion total: 0.063815
+Mejor fitness factible: 0.260814
+Mejor valor factible: 22452.230
+[43/90] instance_medium | pop=4096 | seed=44
+Generaciones ejecutadas: 200
+Tiempo total: 811.35 ms
+Mejor fitness: 0.387361
+Mejor valor total: 38800.750
+Factible (restricciones duras): no
+Penalizacion total: 0.063848
+Mejor fitness factible: 0.257152
+Mejor valor factible: 22140.730
+[44/90] instance_medium | pop=4096 | seed=45
+Generaciones ejecutadas: 200
+Tiempo total: 810.64 ms
+Mejor fitness: 0.381667
+Mejor valor total: 37721.180
+Factible (restricciones duras): no
+Penalizacion total: 0.056988
+Mejor fitness factible: 0.258751
+Mejor valor factible: 22298.920
+[45/90] instance_medium | pop=4096 | seed=46
+Generaciones ejecutadas: 200
+Tiempo total: 805.13 ms
+Mejor fitness: 0.383650
+Mejor valor total: 37924.180
+Factible (restricciones duras): no
+Penalizacion total: 0.057365
+Mejor fitness factible: 0.258958
+Mejor valor factible: 22294.380
+[46/90] instance_medium | pop=4096 | seed=47
+Generaciones ejecutadas: 200
+Tiempo total: 812.11 ms
+Mejor fitness: 0.384976
+Mejor valor total: 38080.980
+Factible (restricciones duras): no
+Penalizacion total: 0.057863
+Mejor fitness factible: 0.259324
+Mejor valor factible: 22327.510
+[47/90] instance_medium | pop=4096 | seed=48
+Generaciones ejecutadas: 200
+Tiempo total: 805.73 ms
+Mejor fitness: 0.382472
+Mejor valor total: 37539.270
+Factible (restricciones duras): no
+Penalizacion total: 0.054068
+Mejor fitness factible: 0.257780
+Mejor valor factible: 22198.220
+[48/90] instance_medium | pop=4096 | seed=49
+Generaciones ejecutadas: 200
+Tiempo total: 809.41 ms
+Mejor fitness: 0.387375
+Mejor valor total: 37898.200
+Factible (restricciones duras): no
+Penalizacion total: 0.053338
+Mejor fitness factible: 0.258162
+Mejor valor factible: 22219.030
+[49/90] instance_medium | pop=4096 | seed=50
+Generaciones ejecutadas: 200
+Tiempo total: 811.12 ms
+Mejor fitness: 0.385137
+Mejor valor total: 38322.880
+Factible (restricciones duras): no
+Penalizacion total: 0.060515
+Mejor fitness factible: 0.259642
+Mejor valor factible: 22373.800
+[50/90] instance_medium | pop=4096 | seed=51
+Generaciones ejecutadas: 200
+Tiempo total: 805.04 ms
+Mejor fitness: 0.385211
+Mejor valor total: 37589.580
+Factible (restricciones duras): no
+Penalizacion total: 0.051913
+Mejor fitness factible: 0.263374
+Mejor valor factible: 22694.710
+[51/90] instance_medium | pop=16384 | seed=42
+Generaciones ejecutadas: 200
+Tiempo total: 2809.44 ms
+Mejor fitness: 0.393925
+Mejor valor total: 39348.350
+Factible (restricciones duras): no
+Penalizacion total: 0.063652
+Mejor fitness factible: 0.260662
+Mejor valor factible: 22458.040
+[52/90] instance_medium | pop=16384 | seed=43
+Generaciones ejecutadas: 200
+Tiempo total: 2813.33 ms
+Mejor fitness: 0.393970
+Mejor valor total: 38925.870
+Factible (restricciones duras): no
+Penalizacion total: 0.058694
+Mejor fitness factible: 0.259473
+Mejor valor factible: 22357.530
+[53/90] instance_medium | pop=16384 | seed=44
+Generaciones ejecutadas: 200
+Tiempo total: 2815.60 ms
+Mejor fitness: 0.393622
+Mejor valor total: 39073.490
+Factible (restricciones duras): no
+Penalizacion total: 0.060758
+Mejor fitness factible: 0.260899
+Mejor valor factible: 22469.890
+[54/90] instance_medium | pop=16384 | seed=45
+Generaciones ejecutadas: 200
+Tiempo total: 2799.67 ms
+Mejor fitness: 0.394623
+Mejor valor total: 38787.170
+Factible (restricciones duras): no
+Penalizacion total: 0.056428
+Mejor fitness factible: 0.260235
+Mejor valor factible: 22395.560
+[55/90] instance_medium | pop=16384 | seed=46
+Generaciones ejecutadas: 200
+Tiempo total: 2813.94 ms
+Mejor fitness: 0.394832
+Mejor valor total: 39747.890
+Factible (restricciones duras): no
+Penalizacion total: 0.067391
+Mejor fitness factible: 0.259935
+Mejor valor factible: 22381.770
+[56/90] instance_medium | pop=16384 | seed=47
+Generaciones ejecutadas: 200
+Tiempo total: 2805.87 ms
+Mejor fitness: 0.395766
+Mejor valor total: 39118.500
+Factible (restricciones duras): no
+Penalizacion total: 0.059138
+Mejor fitness factible: 0.263955
+Mejor valor factible: 22732.660
+[57/90] instance_medium | pop=16384 | seed=48
+Generaciones ejecutadas: 200
+Tiempo total: 2802.61 ms
+Mejor fitness: 0.393978
+Mejor valor total: 39519.390
+Factible (restricciones duras): no
+Penalizacion total: 0.065588
+Mejor fitness factible: 0.264824
+Mejor valor factible: 22798.810
+[58/90] instance_medium | pop=16384 | seed=49
+Generaciones ejecutadas: 200
+Tiempo total: 2796.45 ms
+Mejor fitness: 0.393917
+Mejor valor total: 39109.230
+Factible (restricciones duras): no
+Penalizacion total: 0.060879
+Mejor fitness factible: 0.260518
+Mejor valor factible: 22430.240
+[59/90] instance_medium | pop=16384 | seed=50
+Generaciones ejecutadas: 200
+Tiempo total: 2793.97 ms
+Mejor fitness: 0.392690
+Mejor valor total: 38620.440
+Factible (restricciones duras): no
+Penalizacion total: 0.056422
+Mejor fitness factible: 0.261033
+Mejor valor factible: 22471.050
+[60/90] instance_medium | pop=16384 | seed=51
+Generaciones ejecutadas: 200
+Tiempo total: 2818.63 ms
+Mejor fitness: 0.394003
+Mejor valor total: 38968.850
+Factible (restricciones duras): no
+Penalizacion total: 0.059161
+Mejor fitness factible: 0.263374
+Mejor valor factible: 22694.710
+[61/90] instance_large | pop=1024 | seed=42
+Generaciones ejecutadas: 200
+Tiempo total: 4332.60 ms
+Mejor fitness: 0.262503
+Mejor valor total: 233884.940
+Factible (restricciones duras): no
+Penalizacion total: 0.006160
+Mejor fitness factible: 0.245242
+Mejor valor factible: 213584.770
+[62/90] instance_large | pop=1024 | seed=43
+Generaciones ejecutadas: 200
+Tiempo total: 4317.18 ms
+Mejor fitness: 0.263245
+Mejor valor total: 235983.330
+Factible (restricciones duras): no
+Penalizacion total: 0.007829
+Mejor fitness factible: 0.244720
+Mejor valor factible: 213086.520
+[63/90] instance_large | pop=1024 | seed=44
+Generaciones ejecutadas: 200
+Tiempo total: 4314.25 ms
+Mejor fitness: 0.262295
+Mejor valor total: 234727.050
+Factible (restricciones duras): no
+Penalizacion total: 0.007335
+Mejor fitness factible: 0.245718
+Mejor valor factible: 213969.390
+[64/90] instance_large | pop=1024 | seed=45
+Generaciones ejecutadas: 200
+Tiempo total: 4324.92 ms
+Mejor fitness: 0.262558
+Mejor valor total: 234879.140
+Factible (restricciones duras): no
+Penalizacion total: 0.007247
+Mejor fitness factible: 0.245646
+Mejor valor factible: 213981.020
+[65/90] instance_large | pop=1024 | seed=46
+Generaciones ejecutadas: 200
+Tiempo total: 4323.06 ms
+Mejor fitness: 0.262048
+Mejor valor total: 234040.640
+Factible (restricciones duras): no
+Penalizacion total: 0.006794
+Mejor fitness factible: 0.245272
+Mejor valor factible: 213561.710
+[66/90] instance_large | pop=1024 | seed=47
+Generaciones ejecutadas: 200
+Tiempo total: 4317.21 ms
+Mejor fitness: 0.262823
+Mejor valor total: 234908.880
+Factible (restricciones duras): no
+Penalizacion total: 0.007016
+Mejor fitness factible: 0.245997
+Mejor valor factible: 214220.730
+[67/90] instance_large | pop=1024 | seed=48
+Generaciones ejecutadas: 200
+Tiempo total: 4320.90 ms
+Mejor fitness: 0.263340
+Mejor valor total: 235472.090
+Factible (restricciones duras): no
+Penalizacion total: 0.007146
+Mejor fitness factible: 0.245977
+Mejor valor factible: 214239.890
+[68/90] instance_large | pop=1024 | seed=49
+Generaciones ejecutadas: 200
+Tiempo total: 4333.78 ms
+Mejor fitness: 0.263266
+Mejor valor total: 235037.910
+Factible (restricciones duras): no
+Penalizacion total: 0.006721
+Mejor fitness factible: 0.246041
+Mejor valor factible: 214265.620
+[69/90] instance_large | pop=1024 | seed=50
+Generaciones ejecutadas: 200
+Tiempo total: 4328.66 ms
+Mejor fitness: 0.262398
+Mejor valor total: 235025.560
+Factible (restricciones duras): no
+Penalizacion total: 0.007575
+Mejor fitness factible: 0.246012
+Mejor valor factible: 214305.580
+[70/90] instance_large | pop=1024 | seed=51
+Generaciones ejecutadas: 200
+Tiempo total: 4317.36 ms
+Mejor fitness: 0.261486
+Mejor valor total: 233184.870
+Factible (restricciones duras): no
+Penalizacion total: 0.006373
+Mejor fitness factible: 0.245457
+Mejor valor factible: 213762.650
+[71/90] instance_large | pop=4096 | seed=42
+Generaciones ejecutadas: 200
+Tiempo total: 13812.29 ms
+Mejor fitness: 0.270572
+Mejor valor total: 243883.050
+Factible (restricciones duras): no
+Penalizacion total: 0.009576
+Mejor fitness factible: 0.247718
+Mejor valor factible: 215743.020
+[72/90] instance_large | pop=4096 | seed=43
+Generaciones ejecutadas: 200
+Tiempo total: 13788.74 ms
+Mejor fitness: 0.270345
+Mejor valor total: 242907.840
+Factible (restricciones duras): no
+Penalizacion total: 0.008683
+Mejor fitness factible: 0.246948
+Mejor valor factible: 215064.470
+[73/90] instance_large | pop=4096 | seed=44
+Generaciones ejecutadas: 200
+Tiempo total: 13817.12 ms
+Mejor fitness: 0.268930
+Mejor valor total: 242818.030
+Factible (restricciones duras): no
+Penalizacion total: 0.009994
+Mejor fitness factible: 0.246080
+Mejor valor factible: 214353.830
+[74/90] instance_large | pop=4096 | seed=45
+Generaciones ejecutadas: 200
+Tiempo total: 13798.17 ms
+Mejor fitness: 0.269741
+Mejor valor total: 243232.770
+Factible (restricciones duras): no
+Penalizacion total: 0.009660
+Mejor fitness factible: 0.245734
+Mejor valor factible: 214057.870
+[75/90] instance_large | pop=4096 | seed=46
+Generaciones ejecutadas: 200
+Tiempo total: 13809.46 ms
+Mejor fitness: 0.269912
+Mejor valor total: 242927.230
+Factible (restricciones duras): no
+Penalizacion total: 0.009138
+Mejor fitness factible: 0.245671
+Mejor valor factible: 213959.250
+[76/90] instance_large | pop=4096 | seed=47
+Generaciones ejecutadas: 200
+Tiempo total: 13793.16 ms
+Mejor fitness: 0.269346
+Mejor valor total: 242014.100
+Factible (restricciones duras): no
+Penalizacion total: 0.008655
+Mejor fitness factible: 0.246072
+Mejor valor factible: 214329.230
+[77/90] instance_large | pop=4096 | seed=48
+Generaciones ejecutadas: 200
+Tiempo total: 13750.34 ms
+Mejor fitness: 0.270905
+Mejor valor total: 243586.070
+Factible (restricciones duras): no
+Penalizacion total: 0.008902
+Mejor fitness factible: 0.247136
+Mejor valor factible: 215301.460
+[78/90] instance_large | pop=4096 | seed=49
+Generaciones ejecutadas: 200
+Tiempo total: 13751.20 ms
+Mejor fitness: 0.270055
+Mejor valor total: 243422.920
+Factible (restricciones duras): no
+Penalizacion total: 0.009564
+Mejor fitness factible: 0.246299
+Mejor valor factible: 214485.480
+[79/90] instance_large | pop=4096 | seed=50
+Generaciones ejecutadas: 200
+Tiempo total: 13803.95 ms
+Mejor fitness: 0.269874
+Mejor valor total: 242866.090
+Factible (restricciones duras): no
+Penalizacion total: 0.009106
+Mejor fitness factible: 0.247706
+Mejor valor factible: 215705.390
+[80/90] instance_large | pop=4096 | seed=51
+Generaciones ejecutadas: 200
+Tiempo total: 13775.65 ms
+Mejor fitness: 0.270787
+Mejor valor total: 242442.920
+Factible (restricciones duras): no
+Penalizacion total: 0.007706
+Mejor fitness factible: 0.246319
+Mejor valor factible: 214504.140
+[81/90] instance_large | pop=16384 | seed=42
+Generaciones ejecutadas: 200
+Tiempo total: 52393.40 ms
+Mejor fitness: 0.276177
+Mejor valor total: 249099.070
+Factible (restricciones duras): no
+Penalizacion total: 0.009963
+Mejor fitness factible: 0.247752
+Mejor valor factible: 215774.980
+[82/90] instance_large | pop=16384 | seed=43
+Generaciones ejecutadas: 200
+Tiempo total: 52338.73 ms
+Mejor fitness: 0.276565
+Mejor valor total: 249909.580
+Factible (restricciones duras): no
+Penalizacion total: 0.010506
+Mejor fitness factible: 0.247219
+Mejor valor factible: 215303.520
+[83/90] instance_large | pop=16384 | seed=44
+Generaciones ejecutadas: 200
+Tiempo total: 52413.59 ms
+Mejor fitness: 0.276420
+Mejor valor total: 250657.630
+Factible (restricciones duras): no
+Penalizacion total: 0.011510
+Mejor fitness factible: 0.246538
+Mejor valor factible: 214728.170
+[84/90] instance_large | pop=16384 | seed=45
+Generaciones ejecutadas: 200
+Tiempo total: 52481.48 ms
+Mejor fitness: 0.277169
+Mejor valor total: 250330.000
+Factible (restricciones duras): no
+Penalizacion total: 0.010385
+Mejor fitness factible: 0.248205
+Mejor valor factible: 216163.640
+[85/90] instance_large | pop=16384 | seed=46
+Generaciones ejecutadas: 200
+Tiempo total: 52349.44 ms
+Mejor fitness: 0.277020
+Mejor valor total: 250242.890
+Factible (restricciones duras): no
+Penalizacion total: 0.010433
+Mejor fitness factible: 0.247032
+Mejor valor factible: 215184.060
+[86/90] instance_large | pop=16384 | seed=47
+Generaciones ejecutadas: 200
+Tiempo total: 52372.57 ms
+Mejor fitness: 0.276845
+Mejor valor total: 250972.700
+Factible (restricciones duras): no
+Penalizacion total: 0.011447
+Mejor fitness factible: 0.246435
+Mejor valor factible: 214654.080
+[87/90] instance_large | pop=16384 | seed=48
+Generaciones ejecutadas: 200
+Tiempo total: 52395.77 ms
+Mejor fitness: 0.277058
+Mejor valor total: 250343.750
+Factible (restricciones duras): no
+Penalizacion total: 0.010512
+Mejor fitness factible: 0.247422
+Mejor valor factible: 215473.790
+[88/90] instance_large | pop=16384 | seed=49
+Generaciones ejecutadas: 200
+Tiempo total: 52397.01 ms
+Mejor fitness: 0.276529
+Mejor valor total: 251149.970
+Factible (restricciones duras): no
+Penalizacion total: 0.011966
+Mejor fitness factible: 0.247301
+Mejor valor factible: 215389.370
+[89/90] instance_large | pop=16384 | seed=50
+Generaciones ejecutadas: 200
+Tiempo total: 52323.47 ms
+Mejor fitness: 0.276692
+Mejor valor total: 250857.910
+Factible (restricciones duras): no
+Penalizacion total: 0.011468
+Mejor fitness factible: 0.247457
+Mejor valor factible: 215498.800
+[90/90] instance_large | pop=16384 | seed=51
+Generaciones ejecutadas: 200
+Tiempo total: 52340.88 ms
+Mejor fitness: 0.276901
+Mejor valor total: 250305.740
+Factible (restricciones duras): no
+Penalizacion total: 0.010625
+Mejor fitness factible: 0.246565
+Mejor valor factible: 214786.510
+
+=== EFECTO DEL TAMAÑO DE BLOQUE ===
+Total: 40 ejecuciones
+[1/40] block=64 | seed=42
+Generaciones ejecutadas: 200
+Tiempo total: 765.21 ms
+Mejor fitness: 0.386775
+Mejor valor total: 38221.590
+Factible (restricciones duras): no
+Penalizacion total: 0.057699
+Mejor fitness factible: 0.258238
+Mejor valor factible: 22249.640
+[2/40] block=64 | seed=43
+Generaciones ejecutadas: 200
+Tiempo total: 767.02 ms
+Mejor fitness: 0.386123
+Mejor valor total: 38691.450
+Factible (restricciones duras): no
+Penalizacion total: 0.063815
+Mejor fitness factible: 0.260814
+Mejor valor factible: 22452.230
+[3/40] block=64 | seed=44
+Generaciones ejecutadas: 200
+Tiempo total: 766.76 ms
+Mejor fitness: 0.387361
+Mejor valor total: 38800.750
+Factible (restricciones duras): no
+Penalizacion total: 0.063848
+Mejor fitness factible: 0.257152
+Mejor valor factible: 22140.730
+[4/40] block=64 | seed=45
+Generaciones ejecutadas: 200
+Tiempo total: 767.42 ms
+Mejor fitness: 0.381667
+Mejor valor total: 37721.180
+Factible (restricciones duras): no
+Penalizacion total: 0.056988
+Mejor fitness factible: 0.258751
+Mejor valor factible: 22298.920
+[5/40] block=64 | seed=46
+Generaciones ejecutadas: 200
+Tiempo total: 764.31 ms
+Mejor fitness: 0.383650
+Mejor valor total: 37924.180
+Factible (restricciones duras): no
+Penalizacion total: 0.057365
+Mejor fitness factible: 0.258958
+Mejor valor factible: 22294.380
+[6/40] block=64 | seed=47
+Generaciones ejecutadas: 200
+Tiempo total: 772.63 ms
+Mejor fitness: 0.384976
+Mejor valor total: 38080.980
+Factible (restricciones duras): no
+Penalizacion total: 0.057863
+Mejor fitness factible: 0.259324
+Mejor valor factible: 22327.510
+[7/40] block=64 | seed=48
+Generaciones ejecutadas: 200
+Tiempo total: 776.87 ms
+Mejor fitness: 0.382472
+Mejor valor total: 37539.270
+Factible (restricciones duras): no
+Penalizacion total: 0.054068
+Mejor fitness factible: 0.257780
+Mejor valor factible: 22198.220
+[8/40] block=64 | seed=49
+Generaciones ejecutadas: 200
+Tiempo total: 767.63 ms
+Mejor fitness: 0.387375
+Mejor valor total: 37898.200
+Factible (restricciones duras): no
+Penalizacion total: 0.053338
+Mejor fitness factible: 0.258162
+Mejor valor factible: 22219.030
+[9/40] block=64 | seed=50
+Generaciones ejecutadas: 200
+Tiempo total: 762.88 ms
+Mejor fitness: 0.385137
+Mejor valor total: 38322.880
+Factible (restricciones duras): no
+Penalizacion total: 0.060515
+Mejor fitness factible: 0.259642
+Mejor valor factible: 22373.800
+[10/40] block=64 | seed=51
+Generaciones ejecutadas: 200
+Tiempo total: 760.05 ms
+Mejor fitness: 0.385211
+Mejor valor total: 37589.580
+Factible (restricciones duras): no
+Penalizacion total: 0.051913
+Mejor fitness factible: 0.263374
+Mejor valor factible: 22694.710
+[11/40] block=128 | seed=42
+Generaciones ejecutadas: 200
+Tiempo total: 778.07 ms
+Mejor fitness: 0.386775
+Mejor valor total: 38221.590
+Factible (restricciones duras): no
+Penalizacion total: 0.057699
+Mejor fitness factible: 0.258238
+Mejor valor factible: 22249.640
+[12/40] block=128 | seed=43
+Generaciones ejecutadas: 200
+Tiempo total: 773.06 ms
+Mejor fitness: 0.386123
+Mejor valor total: 38691.450
+Factible (restricciones duras): no
+Penalizacion total: 0.063815
+Mejor fitness factible: 0.260814
+Mejor valor factible: 22452.230
+[13/40] block=128 | seed=44
+Generaciones ejecutadas: 200
+Tiempo total: 765.37 ms
+Mejor fitness: 0.387361
+Mejor valor total: 38800.750
+Factible (restricciones duras): no
+Penalizacion total: 0.063848
+Mejor fitness factible: 0.257152
+Mejor valor factible: 22140.730
+[14/40] block=128 | seed=45
+Generaciones ejecutadas: 200
+Tiempo total: 768.52 ms
+Mejor fitness: 0.381667
+Mejor valor total: 37721.180
+Factible (restricciones duras): no
+Penalizacion total: 0.056988
+Mejor fitness factible: 0.258751
+Mejor valor factible: 22298.920
+[15/40] block=128 | seed=46
+Generaciones ejecutadas: 200
+Tiempo total: 764.44 ms
+Mejor fitness: 0.383650
+Mejor valor total: 37924.180
+Factible (restricciones duras): no
+Penalizacion total: 0.057365
+Mejor fitness factible: 0.258958
+Mejor valor factible: 22294.380
+[16/40] block=128 | seed=47
+Generaciones ejecutadas: 200
+Tiempo total: 775.50 ms
+Mejor fitness: 0.384976
+Mejor valor total: 38080.980
+Factible (restricciones duras): no
+Penalizacion total: 0.057863
+Mejor fitness factible: 0.259324
+Mejor valor factible: 22327.510
+[17/40] block=128 | seed=48
+Generaciones ejecutadas: 200
+Tiempo total: 771.99 ms
+Mejor fitness: 0.382472
+Mejor valor total: 37539.270
+Factible (restricciones duras): no
+Penalizacion total: 0.054068
+Mejor fitness factible: 0.257780
+Mejor valor factible: 22198.220
+[18/40] block=128 | seed=49
+Generaciones ejecutadas: 200
+Tiempo total: 778.58 ms
+Mejor fitness: 0.387375
+Mejor valor total: 37898.200
+Factible (restricciones duras): no
+Penalizacion total: 0.053338
+Mejor fitness factible: 0.258162
+Mejor valor factible: 22219.030
+[19/40] block=128 | seed=50
+Generaciones ejecutadas: 200
+Tiempo total: 772.52 ms
+Mejor fitness: 0.385137
+Mejor valor total: 38322.880
+Factible (restricciones duras): no
+Penalizacion total: 0.060515
+Mejor fitness factible: 0.259642
+Mejor valor factible: 22373.800
+[20/40] block=128 | seed=51
+Generaciones ejecutadas: 200
+Tiempo total: 775.01 ms
+Mejor fitness: 0.385211
+Mejor valor total: 37589.580
+Factible (restricciones duras): no
+Penalizacion total: 0.051913
+Mejor fitness factible: 0.263374
+Mejor valor factible: 22694.710
+[21/40] block=256 | seed=42
+Generaciones ejecutadas: 200
+Tiempo total: 819.23 ms
+Mejor fitness: 0.386775
+Mejor valor total: 38221.590
+Factible (restricciones duras): no
+Penalizacion total: 0.057699
+Mejor fitness factible: 0.258238
+Mejor valor factible: 22249.640
+[22/40] block=256 | seed=43
+Generaciones ejecutadas: 200
+Tiempo total: 806.10 ms
+Mejor fitness: 0.386123
+Mejor valor total: 38691.450
+Factible (restricciones duras): no
+Penalizacion total: 0.063815
+Mejor fitness factible: 0.260814
+Mejor valor factible: 22452.230
+[23/40] block=256 | seed=44
+Generaciones ejecutadas: 200
+Tiempo total: 805.19 ms
+Mejor fitness: 0.387361
+Mejor valor total: 38800.750
+Factible (restricciones duras): no
+Penalizacion total: 0.063848
+Mejor fitness factible: 0.257152
+Mejor valor factible: 22140.730
+[24/40] block=256 | seed=45
+Generaciones ejecutadas: 200
+Tiempo total: 813.86 ms
+Mejor fitness: 0.381667
+Mejor valor total: 37721.180
+Factible (restricciones duras): no
+Penalizacion total: 0.056988
+Mejor fitness factible: 0.258751
+Mejor valor factible: 22298.920
+[25/40] block=256 | seed=46
+Generaciones ejecutadas: 200
+Tiempo total: 806.27 ms
+Mejor fitness: 0.383650
+Mejor valor total: 37924.180
+Factible (restricciones duras): no
+Penalizacion total: 0.057365
+Mejor fitness factible: 0.258958
+Mejor valor factible: 22294.380
+[26/40] block=256 | seed=47
+Generaciones ejecutadas: 200
+Tiempo total: 807.33 ms
+Mejor fitness: 0.384976
+Mejor valor total: 38080.980
+Factible (restricciones duras): no
+Penalizacion total: 0.057863
+Mejor fitness factible: 0.259324
+Mejor valor factible: 22327.510
+[27/40] block=256 | seed=48
+Generaciones ejecutadas: 200
+Tiempo total: 814.59 ms
+Mejor fitness: 0.382472
+Mejor valor total: 37539.270
+Factible (restricciones duras): no
+Penalizacion total: 0.054068
+Mejor fitness factible: 0.257780
+Mejor valor factible: 22198.220
+[28/40] block=256 | seed=49
+Generaciones ejecutadas: 200
+Tiempo total: 806.36 ms
+Mejor fitness: 0.387375
+Mejor valor total: 37898.200
+Factible (restricciones duras): no
+Penalizacion total: 0.053338
+Mejor fitness factible: 0.258162
+Mejor valor factible: 22219.030
+[29/40] block=256 | seed=50
+Generaciones ejecutadas: 200
+Tiempo total: 805.16 ms
+Mejor fitness: 0.385137
+Mejor valor total: 38322.880
+Factible (restricciones duras): no
+Penalizacion total: 0.060515
+Mejor fitness factible: 0.259642
+Mejor valor factible: 22373.800
+[30/40] block=256 | seed=51
+Generaciones ejecutadas: 200
+Tiempo total: 809.58 ms
+Mejor fitness: 0.385211
+Mejor valor total: 37589.580
+Factible (restricciones duras): no
+Penalizacion total: 0.051913
+Mejor fitness factible: 0.263374
+Mejor valor factible: 22694.710
+[31/40] block=512 | seed=42
+Generaciones ejecutadas: 200
+Tiempo total: 904.15 ms
+Mejor fitness: 0.386775
+Mejor valor total: 38221.590
+Factible (restricciones duras): no
+Penalizacion total: 0.057699
+Mejor fitness factible: 0.258238
+Mejor valor factible: 22249.640
+[32/40] block=512 | seed=43
+Generaciones ejecutadas: 200
+Tiempo total: 909.16 ms
+Mejor fitness: 0.386123
+Mejor valor total: 38691.450
+Factible (restricciones duras): no
+Penalizacion total: 0.063815
+Mejor fitness factible: 0.260814
+Mejor valor factible: 22452.230
+[33/40] block=512 | seed=44
+Generaciones ejecutadas: 200
+Tiempo total: 908.31 ms
+Mejor fitness: 0.387361
+Mejor valor total: 38800.750
+Factible (restricciones duras): no
+Penalizacion total: 0.063848
+Mejor fitness factible: 0.257152
+Mejor valor factible: 22140.730
+[34/40] block=512 | seed=45
+Generaciones ejecutadas: 200
+Tiempo total: 911.70 ms
+Mejor fitness: 0.381667
+Mejor valor total: 37721.180
+Factible (restricciones duras): no
+Penalizacion total: 0.056988
+Mejor fitness factible: 0.258751
+Mejor valor factible: 22298.920
+[35/40] block=512 | seed=46
+Generaciones ejecutadas: 200
+Tiempo total: 907.69 ms
+Mejor fitness: 0.383650
+Mejor valor total: 37924.180
+Factible (restricciones duras): no
+Penalizacion total: 0.057365
+Mejor fitness factible: 0.258958
+Mejor valor factible: 22294.380
+[36/40] block=512 | seed=47
+Generaciones ejecutadas: 200
+Tiempo total: 909.36 ms
+Mejor fitness: 0.384976
+Mejor valor total: 38080.980
+Factible (restricciones duras): no
+Penalizacion total: 0.057863
+Mejor fitness factible: 0.259324
+Mejor valor factible: 22327.510
+[37/40] block=512 | seed=48
+Generaciones ejecutadas: 200
+Tiempo total: 910.70 ms
+Mejor fitness: 0.382472
+Mejor valor total: 37539.270
+Factible (restricciones duras): no
+Penalizacion total: 0.054068
+Mejor fitness factible: 0.257780
+Mejor valor factible: 22198.220
+[38/40] block=512 | seed=49
+Generaciones ejecutadas: 200
+Tiempo total: 902.46 ms
+Mejor fitness: 0.387375
+Mejor valor total: 37898.200
+Factible (restricciones duras): no
+Penalizacion total: 0.053338
+Mejor fitness factible: 0.258162
+Mejor valor factible: 22219.030
+[39/40] block=512 | seed=50
+Generaciones ejecutadas: 200
+Tiempo total: 910.31 ms
+Mejor fitness: 0.385137
+Mejor valor total: 38322.880
+Factible (restricciones duras): no
+Penalizacion total: 0.060515
+Mejor fitness factible: 0.259642
+Mejor valor factible: 22373.800
+[40/40] block=512 | seed=51
+Generaciones ejecutadas: 200
+Tiempo total: 908.78 ms
+Mejor fitness: 0.385211
+Mejor valor total: 37589.580
+Factible (restricciones duras): no
+Penalizacion total: 0.051913
+Mejor fitness factible: 0.263374
+Mejor valor factible: 22694.710
+
+=== LISTO ===
+Principal: /home/grupo1/Actividad_2_Semana_7_INFO1194/results/resultados_v3.csv  (91 filas)
+Block:     /home/grupo1/Actividad_2_Semana_7_INFO1194/results/block_size_v3.csv (41 filas)

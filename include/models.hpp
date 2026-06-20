@@ -81,4 +81,7 @@ struct GARunResult {
 	EvaluatedIndividual best_feasible;
 	bool has_feasible;
 	int generations_executed;
+	double kernel_time_ms = 0.0;
+	double transfer_d2h_ms = 0.0;
+	double transfer_h2d_ms = 0.0;
 };
