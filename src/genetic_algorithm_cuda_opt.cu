@@ -372,6 +372,14 @@ GARunResult run_genetic_algorithm_cuda_optimized(const ProblemInstance &instance
 	CUDA_CHECK(cudaGetLastError());
 	CUDA_CHECK(cudaDeviceSynchronize());
 
+	// Eventos CUDA para medir tiempos de kernels y transferencias (igual que V2)
+	cudaEvent_t ev_start, ev_stop;
+	CUDA_CHECK(cudaEventCreate(&ev_start));
+	CUDA_CHECK(cudaEventCreate(&ev_stop));
+	double kernel_time_ms  = 0.0;
+	double transfer_d2h_ms = 0.0;
+	double transfer_h2d_ms = 0.0;
+
 	// ── Población inicial factible en host (misma estrategia que V1 y V2) ──
 	{
 		std::mt19937 init_rng(static_cast<unsigned long long>(seed));
@@ -381,7 +389,11 @@ GARunResult run_genetic_algorithm_cuda_optimized(const ProblemInstance &instance
 			Chromosome ch = make_feasible_random_chromosome(instance, init_rng);
 			std::copy(ch.genes.begin(), ch.genes.end(), h_pop.begin() + (size_t)i * n_items);
 		}
+		CUDA_CHECK(cudaEventRecord(ev_start));
 		CUDA_CHECK(cudaMemcpy(ctx.d_population, h_pop.data(), pop_bytes, cudaMemcpyHostToDevice));
+		CUDA_CHECK(cudaEventRecord(ev_stop));
+		CUDA_CHECK(cudaEventSynchronize(ev_stop));
+		{ float ms; CUDA_CHECK(cudaEventElapsedTime(&ms, ev_start, ev_stop)); transfer_h2d_ms += ms; }
 	}
 
 	// ── Buffers host para reducción de resultados parciales (grid_pop elementos) ──
@@ -405,6 +417,7 @@ GARunResult run_genetic_algorithm_cuda_optimized(const ProblemInstance &instance
 	for (int gen = 0; gen < config.generations; ++gen) {
 
 		// 1. Evaluación de aptitud — Optimizaciones 1 y 2
+		CUDA_CHECK(cudaEventRecord(ev_start));
 		kernel_evaluate_fitness_v3<<<grid_pop, block_size>>>(
 		    ctx.d_population,
 		    gi.d_values, gi.d_weights, gi.d_volumes,
@@ -414,16 +427,24 @@ GARunResult run_genetic_algorithm_cuda_optimized(const ProblemInstance &instance
 		    ctx.d_fitness, ctx.d_feasible, pop_size);
 		CUDA_CHECK(cudaGetLastError());
 		CUDA_CHECK(cudaDeviceSynchronize());
+		CUDA_CHECK(cudaEventRecord(ev_stop));
+		CUDA_CHECK(cudaEventSynchronize(ev_stop));
+		{ float ms; CUDA_CHECK(cudaEventElapsedTime(&ms, ev_start, ev_stop)); kernel_time_ms += ms; }
 
 		// 2. Búsqueda del mejor con shared memory — Optimización 3
+		CUDA_CHECK(cudaEventRecord(ev_start));
 		kernel_find_best_feasible<<<grid_pop, block_size, smem_best>>>(
 		    ctx.d_fitness, ctx.d_feasible, pop_size,
 		    ctx.d_block_best_idx,             ctx.d_block_best_fitness,
 		    ctx.d_block_best_feasible_idx,    ctx.d_block_best_feasible_fitness);
 		CUDA_CHECK(cudaGetLastError());
 		CUDA_CHECK(cudaDeviceSynchronize());
+		CUDA_CHECK(cudaEventRecord(ev_stop));
+		CUDA_CHECK(cudaEventSynchronize(ev_stop));
+		{ float ms; CUDA_CHECK(cudaEventElapsedTime(&ms, ev_start, ev_stop)); kernel_time_ms += ms; }
 
 		// 3. Transferir resultados parciales (grid_pop × 24 B) — Optimización 3 y 4
+		CUDA_CHECK(cudaEventRecord(ev_start));
 		CUDA_CHECK(cudaMemcpy(h_blk_idx.data(),      ctx.d_block_best_idx,
 		                      grid_pop * sizeof(int),    cudaMemcpyDeviceToHost));
 		CUDA_CHECK(cudaMemcpy(h_blk_fit.data(),      ctx.d_block_best_fitness,
@@ -432,6 +453,9 @@ GARunResult run_genetic_algorithm_cuda_optimized(const ProblemInstance &instance
 		                      grid_pop * sizeof(int),    cudaMemcpyDeviceToHost));
 		CUDA_CHECK(cudaMemcpy(h_blk_feas_fit.data(), ctx.d_block_best_feasible_fitness,
 		                      grid_pop * sizeof(double), cudaMemcpyDeviceToHost));
+		CUDA_CHECK(cudaEventRecord(ev_stop));
+		CUDA_CHECK(cudaEventSynchronize(ev_stop));
+		{ float ms; CUDA_CHECK(cudaEventElapsedTime(&ms, ev_start, ev_stop)); transfer_d2h_ms += ms; }
 
 		// 4. Reducción final en CPU sobre grid_pop valores (negligible)
 		int    best_idx      = -1;
@@ -458,9 +482,13 @@ GARunResult run_genetic_algorithm_cuda_optimized(const ProblemInstance &instance
 			// Copiar solo el cromosoma del mejor (n_items bytes)
 			Chromosome best_chrom;
 			best_chrom.genes.resize((size_t)n_items);
+			CUDA_CHECK(cudaEventRecord(ev_start));
 			CUDA_CHECK(cudaMemcpy(best_chrom.genes.data(),
 			                      ctx.d_population + (size_t)best_idx * n_items,
 			                      n_items * sizeof(uint8_t), cudaMemcpyDeviceToHost));
+			CUDA_CHECK(cudaEventRecord(ev_stop));
+			CUDA_CHECK(cudaEventSynchronize(ev_stop));
+			{ float ms; CUDA_CHECK(cudaEventElapsedTime(&ms, ev_start, ev_stop)); transfer_d2h_ms += ms; }
 			result.best_by_fitness = {best_chrom, cpu_eval.evaluate(best_chrom)};
 		} else {
 			++stagnation_counter;
@@ -471,9 +499,13 @@ GARunResult run_genetic_algorithm_cuda_optimized(const ProblemInstance &instance
 			best_feas_ever = best_feas_fit;
 			Chromosome feas_chrom;
 			feas_chrom.genes.resize((size_t)n_items);
+			CUDA_CHECK(cudaEventRecord(ev_start));
 			CUDA_CHECK(cudaMemcpy(feas_chrom.genes.data(),
 			                      ctx.d_population + (size_t)best_feas_idx * n_items,
 			                      n_items * sizeof(uint8_t), cudaMemcpyDeviceToHost));
+			CUDA_CHECK(cudaEventRecord(ev_stop));
+			CUDA_CHECK(cudaEventSynchronize(ev_stop));
+			{ float ms; CUDA_CHECK(cudaEventElapsedTime(&ms, ev_start, ev_stop)); transfer_d2h_ms += ms; }
 			result.best_feasible = {feas_chrom, cpu_eval.evaluate(feas_chrom)};
 			result.has_feasible  = true;
 		}
@@ -485,51 +517,82 @@ GARunResult run_genetic_algorithm_cuda_optimized(const ProblemInstance &instance
 
 		// 7. CUB sort (fitness descendente → d_sorted_indices)
 		// Salida: d_sorted_indices[0..elitism_count-1] = índices de élite (Optimización 4)
+		CUDA_CHECK(cudaEventRecord(ev_start));
 		CUDA_CHECK(cub::DeviceRadixSort::SortPairsDescending(
 		    d_temp_storage, temp_bytes,
 		    ctx.d_fitness, d_sorted_fitness,
 		    d_identity,    d_sorted_indices,
 		    pop_size));
 		CUDA_CHECK(cudaGetLastError());
+		CUDA_CHECK(cudaEventRecord(ev_stop));
+		CUDA_CHECK(cudaEventSynchronize(ev_stop));
+		{ float ms; CUDA_CHECK(cudaEventElapsedTime(&ms, ev_start, ev_stop)); kernel_time_ms += ms; }
 
 		// 8. Selección por ranking geométrico (reutiliza d_sorted_indices de V2)
+		CUDA_CHECK(cudaEventRecord(ev_start));
 		kernel_rank_selection<<<grid_pop, block_size>>>(
 		    d_sorted_indices, ctx.d_selected_a, ctx.d_selected_b,
 		    ctx.d_rng_states, pop_size, rank_count, d_cum_probs);
 		CUDA_CHECK(cudaGetLastError());
 		CUDA_CHECK(cudaDeviceSynchronize());
+		CUDA_CHECK(cudaEventRecord(ev_stop));
+		CUDA_CHECK(cudaEventSynchronize(ev_stop));
+		{ float ms; CUDA_CHECK(cudaEventElapsedTime(&ms, ev_start, ev_stop)); kernel_time_ms += ms; }
 
 		// 9. Cruzamiento V3 (sin divergencia de warps) — Optimización 5
+		CUDA_CHECK(cudaEventRecord(ev_start));
 		kernel_crossover_v3<<<grid_pop, block_size>>>(
 		    ctx.d_population, ctx.d_new_population,
 		    ctx.d_selected_a, ctx.d_selected_b,
 		    ctx.d_rng_states, pop_size, config.crossover_rate);
 		CUDA_CHECK(cudaGetLastError());
 		CUDA_CHECK(cudaDeviceSynchronize());
+		CUDA_CHECK(cudaEventRecord(ev_stop));
+		CUDA_CHECK(cudaEventSynchronize(ev_stop));
+		{ float ms; CUDA_CHECK(cudaEventElapsedTime(&ms, ev_start, ev_stop)); kernel_time_ms += ms; }
 
 		// 10. Mutación V3 (XOR predicado, sin divergencia de warps) — Optimización 5
+		CUDA_CHECK(cudaEventRecord(ev_start));
 		kernel_mutation_v3<<<grid_pop, block_size>>>(
 		    ctx.d_new_population, ctx.d_rng_states, pop_size, config.mutation_rate);
 		CUDA_CHECK(cudaGetLastError());
 		CUDA_CHECK(cudaDeviceSynchronize());
+		CUDA_CHECK(cudaEventRecord(ev_stop));
+		CUDA_CHECK(cudaEventSynchronize(ev_stop));
+		{ float ms; CUDA_CHECK(cudaEventElapsedTime(&ms, ev_start, ev_stop)); kernel_time_ms += ms; }
 
 		// 11. Preservar élites — Optimización 4: d_sorted_indices ya tiene los índices
 		// de los mejores individuos (top-k del CUB sort). Se pasa directamente al kernel,
 		// evitando el ciclo partial_sort en CPU + cudaMemcpy de V2.
 		const int grid_elite = (config.elitism_count + block_size - 1) / block_size;
+		CUDA_CHECK(cudaEventRecord(ev_start));
 		kernel_preserve_elites<<<grid_elite, block_size>>>(
 		    ctx.d_population, ctx.d_new_population,
 		    d_sorted_indices,          // top elitism_count = élites, ya en GPU
 		    config.elitism_count, n_items);
 		CUDA_CHECK(cudaGetLastError());
 		CUDA_CHECK(cudaDeviceSynchronize());
+		CUDA_CHECK(cudaEventRecord(ev_stop));
+		CUDA_CHECK(cudaEventSynchronize(ev_stop));
+		{ float ms; CUDA_CHECK(cudaEventElapsedTime(&ms, ev_start, ev_stop)); kernel_time_ms += ms; }
 
 		// 12. Actualizar población
+		CUDA_CHECK(cudaEventRecord(ev_start));
 		kernel_update_population<<<grid_pop, block_size>>>(
 		    ctx.d_population, ctx.d_new_population, pop_size, n_items);
 		CUDA_CHECK(cudaGetLastError());
 		CUDA_CHECK(cudaDeviceSynchronize());
+		CUDA_CHECK(cudaEventRecord(ev_stop));
+		CUDA_CHECK(cudaEventSynchronize(ev_stop));
+		{ float ms; CUDA_CHECK(cudaEventElapsedTime(&ms, ev_start, ev_stop)); kernel_time_ms += ms; }
 	}
+
+	result.kernel_time_ms  = kernel_time_ms;
+	result.transfer_d2h_ms = transfer_d2h_ms;
+	result.transfer_h2d_ms = transfer_h2d_ms;
+
+	CUDA_CHECK(cudaEventDestroy(ev_start));
+	CUDA_CHECK(cudaEventDestroy(ev_stop));
 
 	// ── Liberar memoria ──────────────────────────────────────────────────────
 	cudaFree(d_identity);

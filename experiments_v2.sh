@@ -9,6 +9,7 @@
 
 # ============================================================
 # Toma de tiempos — Variante 2: CUDA Básico
+# Incluye columnas: kernel_time_ms, transfer_d2h_ms, transfer_h2d_ms
 # Instancias: small (100 ítems), medium (1000), large (10000)
 # Poblaciones: 1024, 4096, 16384
 # Semillas: 42–51 (10 repeticiones por configuración)

@@ -1,0 +1,1004 @@
+[ 20%] Built target fmt
+[100%] Built target mochila_ga_cuda
+Hardware:
+NVIDIA GeForce RTX 4090, 24564 MiB, 535.309.01
+=== EXPERIMENTO PRINCIPAL: sequential ===
+Total: 90 ejecuciones
+[1/90] instance_small | pop=1024 | seed=42
+Generaciones ejecutadas: 95
+Tiempo total: 441.08 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.398401
+Mejor valor total: 3668.920
+Factible (restricciones duras): no
+Penalizacion total: 0.054826
+Mejor fitness factible: 0.286398
+Mejor valor factible: 2321.660
+[2/90] instance_small | pop=1024 | seed=43
+Generaciones ejecutadas: 86
+Tiempo total: 390.26 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.398401
+Mejor valor total: 3668.920
+Factible (restricciones duras): no
+Penalizacion total: 0.054826
+Mejor fitness factible: 0.294382
+Mejor valor factible: 2399.240
+[3/90] instance_small | pop=1024 | seed=44
+Generaciones ejecutadas: 101
+Tiempo total: 456.23 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.398401
+Mejor valor total: 3668.920
+Factible (restricciones duras): no
+Penalizacion total: 0.054826
+Mejor fitness factible: 0.291603
+Mejor valor factible: 2370.270
+[4/90] instance_small | pop=1024 | seed=45
+Generaciones ejecutadas: 101
+Tiempo total: 457.95 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.398401
+Mejor valor total: 3668.920
+Factible (restricciones duras): no
+Penalizacion total: 0.054826
+Mejor fitness factible: 0.284774
+Mejor valor factible: 2314.990
+[5/90] instance_small | pop=1024 | seed=46
+Generaciones ejecutadas: 96
+Tiempo total: 440.49 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.398030
+Mejor valor total: 3766.280
+Factible (restricciones duras): no
+Penalizacion total: 0.067224
+Mejor fitness factible: 0.291371
+Mejor valor factible: 2368.390
+[6/90] instance_small | pop=1024 | seed=47
+Generaciones ejecutadas: 89
+Tiempo total: 404.79 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.398401
+Mejor valor total: 3668.920
+Factible (restricciones duras): no
+Penalizacion total: 0.054826
+Mejor fitness factible: 0.299022
+Mejor valor factible: 2428.710
+[7/90] instance_small | pop=1024 | seed=48
+Generaciones ejecutadas: 102
+Tiempo total: 460.42 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.398401
+Mejor valor total: 3668.920
+Factible (restricciones duras): no
+Penalizacion total: 0.054826
+Mejor fitness factible: 0.287884
+Mejor valor factible: 2341.780
+[8/90] instance_small | pop=1024 | seed=49
+Generaciones ejecutadas: 94
+Tiempo total: 426.04 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.398401
+Mejor valor total: 3668.920
+Factible (restricciones duras): no
+Penalizacion total: 0.054826
+Mejor fitness factible: 0.302163
+Mejor valor factible: 2457.370
+[9/90] instance_small | pop=1024 | seed=50
+Generaciones ejecutadas: 84
+Tiempo total: 390.64 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.398030
+Mejor valor total: 3766.280
+Factible (restricciones duras): no
+Penalizacion total: 0.067224
+Mejor fitness factible: 0.288661
+Mejor valor factible: 2346.450
+[10/90] instance_small | pop=1024 | seed=51
+Generaciones ejecutadas: 100
+Tiempo total: 457.47 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.398030
+Mejor valor total: 3766.280
+Factible (restricciones duras): no
+Penalizacion total: 0.067224
+Mejor fitness factible: 0.303154
+Mejor valor factible: 2462.160
+[11/90] instance_small | pop=4096 | seed=42
+Generaciones ejecutadas: 76
+Tiempo total: 1411.79 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.398401
+Mejor valor total: 3668.920
+Factible (restricciones duras): no
+Penalizacion total: 0.054826
+Mejor fitness factible: 0.307992
+Mejor valor factible: 2504.560
+[12/90] instance_small | pop=4096 | seed=43
+Generaciones ejecutadas: 78
+Tiempo total: 1444.40 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.398030
+Mejor valor total: 3766.280
+Factible (restricciones duras): no
+Penalizacion total: 0.067224
+Mejor fitness factible: 0.303776
+Mejor valor factible: 2467.190
+[13/90] instance_small | pop=4096 | seed=44
+Generaciones ejecutadas: 79
+Tiempo total: 1480.06 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.398401
+Mejor valor total: 3668.920
+Factible (restricciones duras): no
+Penalizacion total: 0.054826
+Mejor fitness factible: 0.289610
+Mejor valor factible: 2352.520
+[14/90] instance_small | pop=4096 | seed=45
+Generaciones ejecutadas: 72
+Tiempo total: 1328.80 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.398401
+Mejor valor total: 3668.920
+Factible (restricciones duras): no
+Penalizacion total: 0.054826
+Mejor fitness factible: 0.292170
+Mejor valor factible: 2370.000
+[15/90] instance_small | pop=4096 | seed=46
+Generaciones ejecutadas: 77
+Tiempo total: 1451.09 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.398030
+Mejor valor total: 3766.280
+Factible (restricciones duras): no
+Penalizacion total: 0.067224
+Mejor fitness factible: 0.308020
+Mejor valor factible: 2503.170
+[16/90] instance_small | pop=4096 | seed=47
+Generaciones ejecutadas: 77
+Tiempo total: 1440.93 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.398030
+Mejor valor total: 3766.280
+Factible (restricciones duras): no
+Penalizacion total: 0.067224
+Mejor fitness factible: 0.300497
+Mejor valor factible: 2440.650
+[17/90] instance_small | pop=4096 | seed=48
+Generaciones ejecutadas: 77
+Tiempo total: 1452.10 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.398030
+Mejor valor total: 3766.280
+Factible (restricciones duras): no
+Penalizacion total: 0.067224
+Mejor fitness factible: 0.292632
+Mejor valor factible: 2380.220
+[18/90] instance_small | pop=4096 | seed=49
+Generaciones ejecutadas: 73
+Tiempo total: 1369.37 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.398401
+Mejor valor total: 3668.920
+Factible (restricciones duras): no
+Penalizacion total: 0.054826
+Mejor fitness factible: 0.302163
+Mejor valor factible: 2457.370
+[19/90] instance_small | pop=4096 | seed=50
+Generaciones ejecutadas: 77
+Tiempo total: 1445.94 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.398030
+Mejor valor total: 3766.280
+Factible (restricciones duras): no
+Penalizacion total: 0.067224
+Mejor fitness factible: 0.308265
+Mejor valor factible: 2505.150
+[20/90] instance_small | pop=4096 | seed=51
+Generaciones ejecutadas: 73
+Tiempo total: 1365.00 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.398401
+Mejor valor total: 3668.920
+Factible (restricciones duras): no
+Penalizacion total: 0.054826
+Mejor fitness factible: 0.312311
+Mejor valor factible: 2537.900
+[21/90] instance_small | pop=16384 | seed=42
+Generaciones ejecutadas: 76
+Tiempo total: 5702.99 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.398401
+Mejor valor total: 3668.920
+Factible (restricciones duras): no
+Penalizacion total: 0.054826
+Mejor fitness factible: 0.300018
+Mejor valor factible: 2438.390
+[22/90] instance_small | pop=16384 | seed=43
+Generaciones ejecutadas: 71
+Tiempo total: 5431.31 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.398030
+Mejor valor total: 3766.280
+Factible (restricciones duras): no
+Penalizacion total: 0.067224
+Mejor fitness factible: 0.303865
+Mejor valor factible: 2471.150
+[23/90] instance_small | pop=16384 | seed=44
+Generaciones ejecutadas: 73
+Tiempo total: 5567.33 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.398401
+Mejor valor total: 3668.920
+Factible (restricciones duras): no
+Penalizacion total: 0.054826
+Mejor fitness factible: 0.298144
+Mejor valor factible: 2418.360
+[24/90] instance_small | pop=16384 | seed=45
+Generaciones ejecutadas: 70
+Tiempo total: 5302.39 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.398401
+Mejor valor total: 3668.920
+Factible (restricciones duras): no
+Penalizacion total: 0.054826
+Mejor fitness factible: 0.308706
+Mejor valor factible: 2505.480
+[25/90] instance_small | pop=16384 | seed=46
+Generaciones ejecutadas: 70
+Tiempo total: 5361.34 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.398030
+Mejor valor total: 3766.280
+Factible (restricciones duras): no
+Penalizacion total: 0.067224
+Mejor fitness factible: 0.298352
+Mejor valor factible: 2418.430
+[26/90] instance_small | pop=16384 | seed=47
+Generaciones ejecutadas: 70
+Tiempo total: 5305.05 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.398401
+Mejor valor total: 3668.920
+Factible (restricciones duras): no
+Penalizacion total: 0.054826
+Mejor fitness factible: 0.310256
+Mejor valor factible: 2519.650
+[27/90] instance_small | pop=16384 | seed=48
+Generaciones ejecutadas: 71
+Tiempo total: 5346.97 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.398401
+Mejor valor total: 3668.920
+Factible (restricciones duras): no
+Penalizacion total: 0.054826
+Mejor fitness factible: 0.297880
+Mejor valor factible: 2421.080
+[28/90] instance_small | pop=16384 | seed=49
+Generaciones ejecutadas: 71
+Tiempo total: 5422.43 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.398401
+Mejor valor total: 3668.920
+Factible (restricciones duras): no
+Penalizacion total: 0.054826
+Mejor fitness factible: 0.305792
+Mejor valor factible: 2485.130
+[29/90] instance_small | pop=16384 | seed=50
+Generaciones ejecutadas: 74
+Tiempo total: 5591.53 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.398030
+Mejor valor total: 3766.280
+Factible (restricciones duras): no
+Penalizacion total: 0.067224
+Mejor fitness factible: 0.299100
+Mejor valor factible: 2429.340
+[30/90] instance_small | pop=16384 | seed=51
+Generaciones ejecutadas: 73
+Tiempo total: 5507.08 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.398401
+Mejor valor total: 3668.920
+Factible (restricciones duras): no
+Penalizacion total: 0.054826
+Mejor fitness factible: 0.315908
+Mejor valor factible: 2575.120
+[31/90] instance_medium | pop=1024 | seed=42
+Generaciones ejecutadas: 200
+Tiempo total: 5519.10 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.364159
+Mejor valor total: 35079.070
+Factible (restricciones duras): no
+Penalizacion total: 0.043771
+Mejor fitness factible: 0.256345
+Mejor valor factible: 22081.670
+[32/90] instance_medium | pop=1024 | seed=43
+Generaciones ejecutadas: 200
+Tiempo total: 5786.27 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.362243
+Mejor valor total: 35702.440
+Factible (restricciones duras): no
+Penalizacion total: 0.052936
+Mejor fitness factible: 0.256953
+Mejor valor factible: 22125.380
+[33/90] instance_medium | pop=1024 | seed=44
+Generaciones ejecutadas: 200
+Tiempo total: 5623.36 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.364859
+Mejor valor total: 35878.370
+Factible (restricciones duras): no
+Penalizacion total: 0.052366
+Mejor fitness factible: 0.255459
+Mejor valor factible: 21988.290
+[34/90] instance_medium | pop=1024 | seed=45
+Generaciones ejecutadas: 200
+Tiempo total: 5639.32 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.360019
+Mejor valor total: 34544.450
+Factible (restricciones duras): no
+Penalizacion total: 0.041694
+Mejor fitness factible: 0.257821
+Mejor valor factible: 22198.280
+[35/90] instance_medium | pop=1024 | seed=46
+Generaciones ejecutadas: 200
+Tiempo total: 5809.88 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.368865
+Mejor valor total: 36278.100
+Factible (restricciones duras): no
+Penalizacion total: 0.053008
+Mejor fitness factible: 0.255194
+Mejor valor factible: 21962.080
+[36/90] instance_medium | pop=1024 | seed=47
+Generaciones ejecutadas: 200
+Tiempo total: 5707.92 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.361965
+Mejor valor total: 34990.950
+Factible (restricciones duras): no
+Penalizacion total: 0.044940
+Mejor fitness factible: 0.256655
+Mejor valor factible: 22094.540
+[37/90] instance_medium | pop=1024 | seed=48
+Generaciones ejecutadas: 200
+Tiempo total: 5702.79 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.366440
+Mejor valor total: 35542.330
+Factible (restricciones duras): no
+Penalizacion total: 0.046877
+Mejor fitness factible: 0.257429
+Mejor valor factible: 22166.330
+[38/90] instance_medium | pop=1024 | seed=49
+Generaciones ejecutadas: 200
+Tiempo total: 5741.37 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.363417
+Mejor valor total: 35540.490
+Factible (restricciones duras): no
+Penalizacion total: 0.049879
+Mejor fitness factible: 0.254480
+Mejor valor factible: 21912.660
+[39/90] instance_medium | pop=1024 | seed=50
+Generaciones ejecutadas: 200
+Tiempo total: 5741.91 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.364775
+Mejor valor total: 35830.700
+Factible (restricciones duras): no
+Penalizacion total: 0.051896
+Mejor fitness factible: 0.257171
+Mejor valor factible: 22130.330
+[40/90] instance_medium | pop=1024 | seed=51
+Generaciones ejecutadas: 200
+Tiempo total: 5649.08 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.365639
+Mejor valor total: 35056.910
+Factible (restricciones duras): no
+Penalizacion total: 0.042033
+Mejor fitness factible: 0.263028
+Mejor valor factible: 22664.960
+[41/90] instance_medium | pop=4096 | seed=42
+Generaciones ejecutadas: 200
+Tiempo total: 23804.28 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.387643
+Mejor valor total: 38265.480
+Factible (restricciones duras): no
+Penalizacion total: 0.057341
+Mejor fitness factible: 0.258418
+Mejor valor factible: 22266.830
+[42/90] instance_medium | pop=4096 | seed=43
+Generaciones ejecutadas: 200
+Tiempo total: 23592.20 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.384675
+Mejor valor total: 38186.440
+Factible (restricciones duras): no
+Penalizacion total: 0.059391
+Mejor fitness factible: 0.260814
+Mejor valor factible: 22452.230
+[43/90] instance_medium | pop=4096 | seed=44
+Generaciones ejecutadas: 200
+Tiempo total: 23241.28 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.385282
+Mejor valor total: 37615.990
+Factible (restricciones duras): no
+Penalizacion total: 0.052149
+Mejor fitness factible: 0.256749
+Mejor valor factible: 22106.130
+[44/90] instance_medium | pop=4096 | seed=45
+Generaciones ejecutadas: 200
+Tiempo total: 23823.04 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.383757
+Mejor valor total: 37791.560
+Factible (restricciones duras): no
+Penalizacion total: 0.055717
+Mejor fitness factible: 0.258350
+Mejor valor factible: 22242.040
+[45/90] instance_medium | pop=4096 | seed=46
+Generaciones ejecutadas: 200
+Tiempo total: 23581.92 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.384952
+Mejor valor total: 38201.850
+Factible (restricciones duras): no
+Penalizacion total: 0.059292
+Mejor fitness factible: 0.259258
+Mejor valor factible: 22320.130
+[46/90] instance_medium | pop=4096 | seed=47
+Generaciones ejecutadas: 200
+Tiempo total: 23912.17 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.387742
+Mejor valor total: 38854.230
+Factible (restricciones duras): no
+Penalizacion total: 0.064089
+Mejor fitness factible: 0.259324
+Mejor valor factible: 22327.510
+[47/90] instance_medium | pop=4096 | seed=48
+Generaciones ejecutadas: 200
+Tiempo total: 24016.46 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.384144
+Mejor valor total: 37841.150
+Factible (restricciones duras): no
+Penalizacion total: 0.055906
+Mejor fitness factible: 0.257780
+Mejor valor factible: 22198.220
+[48/90] instance_medium | pop=4096 | seed=49
+Generaciones ejecutadas: 200
+Tiempo total: 24073.55 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.388012
+Mejor valor total: 38879.320
+Factible (restricciones duras): no
+Penalizacion total: 0.064111
+Mejor fitness factible: 0.257421
+Mejor valor factible: 22155.280
+[49/90] instance_medium | pop=4096 | seed=50
+Generaciones ejecutadas: 200
+Tiempo total: 23325.99 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.381578
+Mejor valor total: 37900.230
+Factible (restricciones duras): no
+Penalizacion total: 0.059159
+Mejor fitness factible: 0.259642
+Mejor valor factible: 22373.800
+[50/90] instance_medium | pop=4096 | seed=51
+Generaciones ejecutadas: 200
+Tiempo total: 23034.13 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.383995
+Mejor valor total: 37722.210
+Factible (restricciones duras): no
+Penalizacion total: 0.054672
+Mejor fitness factible: 0.263162
+Mejor valor factible: 22678.220
+[51/90] instance_medium | pop=16384 | seed=42
+Generaciones ejecutadas: 200
+Tiempo total: 96901.65 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.393185
+Mejor valor total: 39446.420
+Factible (restricciones duras): no
+Penalizacion total: 0.065532
+Mejor fitness factible: 0.260730
+Mejor valor factible: 22462.230
+[52/90] instance_medium | pop=16384 | seed=43
+Generaciones ejecutadas: 200
+Tiempo total: 95789.50 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.394282
+Mejor valor total: 38930.830
+Factible (restricciones duras): no
+Penalizacion total: 0.058440
+Mejor fitness factible: 0.259370
+Mejor valor factible: 22324.590
+[53/90] instance_medium | pop=16384 | seed=44
+Generaciones ejecutadas: 200
+Tiempo total: 96615.40 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.393694
+Mejor valor total: 39200.190
+Factible (restricciones duras): no
+Penalizacion total: 0.062160
+Mejor fitness factible: 0.260899
+Mejor valor factible: 22469.890
+[54/90] instance_medium | pop=16384 | seed=45
+Generaciones ejecutadas: 200
+Tiempo total: 98121.32 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.395229
+Mejor valor total: 39762.310
+Factible (restricciones duras): no
+Penalizacion total: 0.067162
+Mejor fitness factible: 0.260124
+Mejor valor factible: 22384.260
+[55/90] instance_medium | pop=16384 | seed=46
+Generaciones ejecutadas: 200
+Tiempo total: 95527.84 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.394569
+Mejor valor total: 39110.650
+Factible (restricciones duras): no
+Penalizacion total: 0.060243
+Mejor fitness factible: 0.259935
+Mejor valor factible: 22381.770
+[56/90] instance_medium | pop=16384 | seed=47
+Generaciones ejecutadas: 200
+Tiempo total: 96950.92 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.394690
+Mejor valor total: 39031.750
+Factible (restricciones duras): no
+Penalizacion total: 0.059205
+Mejor fitness factible: 0.263955
+Mejor valor factible: 22732.660
+[57/90] instance_medium | pop=16384 | seed=48
+Generaciones ejecutadas: 200
+Tiempo total: 98051.79 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.395132
+Mejor valor total: 39033.390
+Factible (restricciones duras): no
+Penalizacion total: 0.058782
+Mejor fitness factible: 0.266640
+Mejor valor factible: 22956.670
+[58/90] instance_medium | pop=16384 | seed=49
+Generaciones ejecutadas: 200
+Tiempo total: 96393.29 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.394589
+Mejor valor total: 39007.280
+Factible (restricciones duras): no
+Penalizacion total: 0.059022
+Mejor fitness factible: 0.260645
+Mejor valor factible: 22453.140
+[59/90] instance_medium | pop=16384 | seed=50
+Generaciones ejecutadas: 200
+Tiempo total: 96561.37 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.394048
+Mejor valor total: 38804.280
+Factible (restricciones duras): no
+Penalizacion total: 0.057202
+Mejor fitness factible: 0.261033
+Mejor valor factible: 22471.050
+[60/90] instance_medium | pop=16384 | seed=51
+Generaciones ejecutadas: 200
+Tiempo total: 95954.42 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.393964
+Mejor valor total: 38962.040
+Factible (restricciones duras): no
+Penalizacion total: 0.059121
+Mejor fitness factible: 0.263264
+Mejor valor factible: 22685.270
+[61/90] instance_large | pop=1024 | seed=42
+Generaciones ejecutadas: 200
+Tiempo total: 50288.95 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.262075
+Mejor valor total: 234400.000
+Factible (restricciones duras): no
+Penalizacion total: 0.007180
+Mejor fitness factible: 0.245178
+Mejor valor factible: 213527.290
+[62/90] instance_large | pop=1024 | seed=43
+Generaciones ejecutadas: 200
+Tiempo total: 50118.63 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.264019
+Mejor valor total: 236268.470
+Factible (restricciones duras): no
+Penalizacion total: 0.007382
+Mejor fitness factible: 0.244720
+Mejor valor factible: 213086.520
+[63/90] instance_large | pop=1024 | seed=44
+Generaciones ejecutadas: 200
+Tiempo total: 49891.30 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.262420
+Mejor valor total: 233188.610
+Factible (restricciones duras): no
+Penalizacion total: 0.005443
+Mejor fitness factible: 0.245699
+Mejor valor factible: 213954.190
+[64/90] instance_large | pop=1024 | seed=45
+Generaciones ejecutadas: 200
+Tiempo total: 50306.74 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.262618
+Mejor valor total: 234833.490
+Factible (restricciones duras): no
+Penalizacion total: 0.007135
+Mejor fitness factible: 0.245646
+Mejor valor factible: 213981.020
+[65/90] instance_large | pop=1024 | seed=46
+Generaciones ejecutadas: 200
+Tiempo total: 49724.89 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.262613
+Mejor valor total: 235311.400
+Factible (restricciones duras): no
+Penalizacion total: 0.007689
+Mejor fitness factible: 0.245272
+Mejor valor factible: 213561.710
+[66/90] instance_large | pop=1024 | seed=47
+Generaciones ejecutadas: 200
+Tiempo total: 50173.01 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.262845
+Mejor valor total: 235344.620
+Factible (restricciones duras): no
+Penalizacion total: 0.007495
+Mejor fitness factible: 0.245645
+Mejor valor factible: 213914.640
+[67/90] instance_large | pop=1024 | seed=48
+Generaciones ejecutadas: 200
+Tiempo total: 50236.64 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.263767
+Mejor valor total: 235745.520
+Factible (restricciones duras): no
+Penalizacion total: 0.007033
+Mejor fitness factible: 0.246062
+Mejor valor factible: 214314.140
+[68/90] instance_large | pop=1024 | seed=49
+Generaciones ejecutadas: 200
+Tiempo total: 50050.93 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.262352
+Mejor valor total: 234391.190
+Factible (restricciones duras): no
+Penalizacion total: 0.006893
+Mejor fitness factible: 0.245978
+Mejor valor factible: 214197.110
+[69/90] instance_large | pop=1024 | seed=50
+Generaciones ejecutadas: 200
+Tiempo total: 50323.38 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.263316
+Mejor valor total: 235258.400
+Factible (restricciones duras): no
+Penalizacion total: 0.006924
+Mejor fitness factible: 0.246235
+Mejor valor factible: 214442.130
+[70/90] instance_large | pop=1024 | seed=51
+Generaciones ejecutadas: 200
+Tiempo total: 50512.56 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.262001
+Mejor valor total: 234772.430
+Factible (restricciones duras): no
+Penalizacion total: 0.007682
+Mejor fitness factible: 0.245222
+Mejor valor factible: 213558.060
+[71/90] instance_large | pop=4096 | seed=42
+Generaciones ejecutadas: 200
+Tiempo total: 198605.81 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.270793
+Mejor valor total: 243180.400
+Factible (restricciones duras): no
+Penalizacion total: 0.008547
+Mejor fitness factible: 0.247597
+Mejor valor factible: 215648.620
+[72/90] instance_large | pop=4096 | seed=43
+Generaciones ejecutadas: 200
+Tiempo total: 199860.34 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.270467
+Mejor valor total: 242089.010
+Factible (restricciones duras): no
+Penalizacion total: 0.007620
+Mejor fitness factible: 0.247487
+Mejor valor factible: 215539.060
+[73/90] instance_large | pop=4096 | seed=44
+Generaciones ejecutadas: 200
+Tiempo total: 199648.55 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.269905
+Mejor valor total: 242469.800
+Factible (restricciones duras): no
+Penalizacion total: 0.008620
+Mejor fitness factible: 0.246029
+Mejor valor factible: 214309.210
+[74/90] instance_large | pop=4096 | seed=45
+Generaciones ejecutadas: 200
+Tiempo total: 200171.32 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.269734
+Mejor valor total: 243933.050
+Factible (restricciones duras): no
+Penalizacion total: 0.010471
+Mejor fitness factible: 0.245662
+Mejor valor factible: 213991.980
+[75/90] instance_large | pop=4096 | seed=46
+Generaciones ejecutadas: 200
+Tiempo total: 200458.65 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.271479
+Mejor valor total: 244981.620
+Factible (restricciones duras): no
+Penalizacion total: 0.009931
+Mejor fitness factible: 0.245493
+Mejor valor factible: 213750.260
+[76/90] instance_large | pop=4096 | seed=47
+Generaciones ejecutadas: 200
+Tiempo total: 200203.93 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.269885
+Mejor valor total: 241448.980
+Factible (restricciones duras): no
+Penalizacion total: 0.007467
+Mejor fitness factible: 0.246148
+Mejor valor factible: 214393.960
+[77/90] instance_large | pop=4096 | seed=48
+Generaciones ejecutadas: 200
+Tiempo total: 197629.19 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.271717
+Mejor valor total: 243554.510
+Factible (restricciones duras): no
+Penalizacion total: 0.008053
+Mejor fitness factible: 0.247166
+Mejor valor factible: 215290.860
+[78/90] instance_large | pop=4096 | seed=49
+Generaciones ejecutadas: 200
+Tiempo total: 200426.79 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.269876
+Mejor valor total: 242206.870
+Factible (restricciones duras): no
+Penalizacion total: 0.008347
+Mejor fitness factible: 0.246320
+Mejor valor factible: 214534.720
+[79/90] instance_large | pop=4096 | seed=50
+Generaciones ejecutadas: 200
+Tiempo total: 198620.28 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.271355
+Mejor valor total: 243223.090
+Factible (restricciones duras): no
+Penalizacion total: 0.008035
+Mejor fitness factible: 0.248417
+Mejor valor factible: 216334.370
+[80/90] instance_large | pop=4096 | seed=51
+Generaciones ejecutadas: 200
+Tiempo total: 200520.84 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.271021
+Mejor valor total: 242829.280
+Factible (restricciones duras): no
+Penalizacion total: 0.007917
+Mejor fitness factible: 0.246331
+Mejor valor factible: 214512.960
+[81/90] instance_large | pop=16384 | seed=42
+Generaciones ejecutadas: 200
+Tiempo total: 815190.14 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.276754
+Mejor valor total: 250368.260
+Factible (restricciones duras): no
+Penalizacion total: 0.010843
+Mejor fitness factible: 0.247618
+Mejor valor factible: 215647.490
+[82/90] instance_large | pop=16384 | seed=43
+Generaciones ejecutadas: 200
+Tiempo total: 815612.96 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.276661
+Mejor valor total: 250791.730
+Factible (restricciones duras): no
+Penalizacion total: 0.011423
+Mejor fitness factible: 0.247219
+Mejor valor factible: 215303.520
+[83/90] instance_large | pop=16384 | seed=44
+Generaciones ejecutadas: 200
+Tiempo total: 818691.50 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.277970
+Mejor valor total: 251754.410
+Factible (restricciones duras): no
+Penalizacion total: 0.011220
+Mejor fitness factible: 0.246481
+Mejor valor factible: 214677.190
+[84/90] instance_large | pop=16384 | seed=45
+Generaciones ejecutadas: 200
+Tiempo total: 818965.92 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.277471
+Mejor valor total: 250106.400
+Factible (restricciones duras): no
+Penalizacion total: 0.009826
+Mejor fitness factible: 0.248226
+Mejor valor factible: 216185.500
+[85/90] instance_large | pop=16384 | seed=46
+Generaciones ejecutadas: 200
+Tiempo total: 817914.99 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.276018
+Mejor valor total: 249573.980
+Factible (restricciones duras): no
+Penalizacion total: 0.010668
+Mejor fitness factible: 0.247032
+Mejor valor factible: 215184.060
+[86/90] instance_large | pop=16384 | seed=47
+Generaciones ejecutadas: 200
+Tiempo total: 821944.68 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.277174
+Mejor valor total: 251907.080
+Factible (restricciones duras): no
+Penalizacion total: 0.012192
+Mejor fitness factible: 0.246462
+Mejor valor factible: 214692.060
+[87/90] instance_large | pop=16384 | seed=48
+Generaciones ejecutadas: 200
+Tiempo total: 817057.92 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.277313
+Mejor valor total: 250414.620
+Factible (restricciones duras): no
+Penalizacion total: 0.010338
+Mejor fitness factible: 0.247474
+Mejor valor factible: 215552.170
+[88/90] instance_large | pop=16384 | seed=49
+Generaciones ejecutadas: 200
+Tiempo total: 818304.04 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.276768
+Mejor valor total: 249461.440
+Factible (restricciones duras): no
+Penalizacion total: 0.009788
+Mejor fitness factible: 0.247550
+Mejor valor factible: 215609.040
+[89/90] instance_large | pop=16384 | seed=50
+Generaciones ejecutadas: 200
+Tiempo total: 818127.15 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.277252
+Mejor valor total: 251128.400
+Factible (restricciones duras): no
+Penalizacion total: 0.011219
+Mejor fitness factible: 0.247212
+Mejor valor factible: 215262.940
+[90/90] instance_large | pop=16384 | seed=51
+Generaciones ejecutadas: 200
+Tiempo total: 814854.01 ms
+Tiempo kernels GPU: 0.00 ms
+Tiempo transferencias GPU: 0.00 ms (H2D: 0.00, D2H: 0.00)
+Mejor fitness: 0.276982
+Mejor valor total: 250821.280
+Factible (restricciones duras): no
+Penalizacion total: 0.011136
+Mejor fitness factible: 0.246610
+Mejor valor factible: 214827.510
+
+=== EFECTO DEL TAMAÑO DE BLOQUE ===
+No aplica para variante secuencial (block_size es un parámetro CUDA).
+El CSV /home/grupo1/Actividad_2_Semana_7_INFO1194/results/block_size_v1.csv queda solo con el header.
+
+=== LISTO ===
+Principal: /home/grupo1/Actividad_2_Semana_7_INFO1194/results/resultados_v1.csv  (91 filas)
+Block:     /home/grupo1/Actividad_2_Semana_7_INFO1194/results/block_size_v1.csv (solo header — no aplica para secuencial)

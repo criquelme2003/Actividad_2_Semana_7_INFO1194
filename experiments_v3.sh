@@ -1,17 +1,15 @@
 #!/bin/bash -l
 #SBATCH -n 1
-#SBATCH --job-name=bench_cuda_v3
+#SBATCH --job-name=bench_v3_timing
 #SBATCH --partition=RunCuda
 #SBATCH --cpus-per-task=8
 #SBATCH --no-requeue
-#SBATCH --output=logs.bench.%j
+#SBATCH --output=logs.bench.v3.%j
 #SBATCH --time=02:00:00
 
 # ============================================================
-# Toma de tiempos — Variante 3: CUDA Optimizado
-# Instancias: small (100 ítems), medium (1000), large (10000)
-# Poblaciones: 1024, 4096, 16384
-# Semillas: 42–51 (10 repeticiones por configuración)
+# Toma de tiempos V3 (cuda_optimized) con desglose kernel/transfer
+# CSVs nuevos: resultados_v3_timing.csv, block_size_v3_timing.csv
 # ============================================================
 
 set -e
@@ -19,8 +17,8 @@ set -e
 PROJ=/home/grupo1/Actividad_2_Semana_7_INFO1194
 BINARY=$PROJ/build/mochila_ga_cuda
 RESULTS=$PROJ/results
-MAIN_CSV=$RESULTS/resultados_v3.csv
-BLOCK_CSV=$RESULTS/block_size_v3.csv
+MAIN_CSV=$RESULTS/resultados_v3_timing.csv
+BLOCK_CSV=$RESULTS/block_size_v3_timing.csv
 
 mkdir -p "$RESULTS"
 
@@ -31,7 +29,7 @@ cd "$PROJ"
 echo "Hardware:"
 nvidia-smi --query-gpu=name,memory.total,driver_version --format=csv,noheader
 
-HEADER="variant,instance,pop_size,n_items,seed,block_size,gen_exec,time_ms,best_fitness,best_value,has_feasible,best_feasible_fitness,best_feasible_value"
+HEADER="variant,instance,pop_size,n_items,seed,block_size,gen_exec,time_ms,kernel_time_ms,transfer_d2h_ms,transfer_h2d_ms,best_fitness,best_value,has_feasible,best_feasible_fitness,best_feasible_value"
 echo "$HEADER" > "$MAIN_CSV"
 echo "$HEADER" > "$BLOCK_CSV"
 
